@@ -13,7 +13,7 @@ type UseStoreResult =
     };
 
 export default function useLocalStorage(key: string) {
-    const [value, setValue] = useState<string | null>(null);
+    const [value, setValue] = useState<string | null>(localStorage.getItem(key));
 
     const getItem = () => {
         const result = localStorage.getItem(key);
