@@ -1,12 +1,12 @@
 import useAuth from "@/features/auth/hooks/use-auth";
-import { Spinner } from "flowbite-react";
+import Spinner from "@/features/common/components/spinner";
 import { Navigate } from "react-router-dom";
 
 export default function Home() {
   const { loading, isAuthenticated } = useAuth();
 
   if (loading) {
-    return <Spinner size={50} />;
+    return <Spinner className="size-52" />;
   }
 
   if (!isAuthenticated) {

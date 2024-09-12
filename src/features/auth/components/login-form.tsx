@@ -1,7 +1,23 @@
+import { Button } from "@/components/ui/button";
+import {
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import Input from "@/features/common/components/form/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { Button, Label } from "flowbite-react";
+import { Card } from "flowbite-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -42,43 +58,56 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex gap-2 flex-col border border-1 rounded-md p-8 w-full mx-2 md:w-[500px]">
-      <h2 className="text-xl px-5 text-center my-4">
-        <span>Inicia sesión en</span>
-        <div className="d-block text-5xl font-bold">Formotex</div>
-      </h2>
+    <Form {...form}>
       <form
         className="flex flex-col gap-4 text-xl"
         onSubmit={form.handleSubmit(onSubmit, (e) => console.error(e))}
       >
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="username" value="Tu nombre de usuario" />
-          </div>
-          <Input
-            type="text"
-            placeholder="my-username"
-            error={form.formState.errors.username?.message}
-            {...form.register("username")}
-          />
-        </div>
-        <div>
-          <div className="mb-2 block">
-            <Label htmlFor="password1" value="Tu contraseña" />
-          </div>
-          <Input
-            id="password1"
-            type="password"
-            required
-            placeholder="******"
-            error={form.formState.errors.password?.message}
-            {...form.register("password")}
-          />
-        </div>
-        <Button type="button" onClick={form.handleSubmit(onSubmit)}>
-          Iniciar sesión
-        </Button>
+        <Card className="w-full md:min-w-[450px] shadow-md">
+          <CardHeader>
+            <CardTitle className="text-2xl">
+              <h2 className="text-xl px-5 text-center my-4">
+                <span>Inicia sesión en</span>
+                <div className="d-block text-5xl font-bold">Formotex</div>
+              </h2>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nombre de usuario</FormLabel>
+                  <FormControl>
+                    <Input placeholder="username" {...field} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contraseña</FormLabel>
+                  <FormControl>
+                    <Input placeholder="password" type="password" {...field} />
+                  </FormControl>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter>
+            <Button className="w-full">Iniciar sesión</Button>
+          </CardFooter>
+        </Card>
       </form>
-    </div>
+    </Form>
   );
 }

@@ -1,5 +1,12 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner, Table } from "flowbite-react";
+import { Spinner } from "flowbite-react";
 import { getAllEquipment } from "../services/inventory";
 
 export default function InventoryTable() {
@@ -27,25 +34,25 @@ export default function InventoryTable() {
   return (
     <div className="overflow-x-auto w-full p-4">
       <Table>
-        <Table.Head>
-          <Table.HeadCell>Nombre</Table.HeadCell>
-          <Table.HeadCell>Descripción</Table.HeadCell>
-          <Table.HeadCell>Marca</Table.HeadCell>
-          <Table.HeadCell>Tipo</Table.HeadCell>
-          <Table.HeadCell>Acciones</Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
+        <TableHeader>
+          <TableCell>Nombre</TableCell>
+          <TableCell>Descripción</TableCell>
+          <TableCell>Marca</TableCell>
+          <TableCell>Tipo</TableCell>
+          <TableCell>Acciones</TableCell>
+        </TableHeader>
+        <TableBody className="divide-y">
           {equipments?.map((equipment) => {
             return (
-              <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell>{equipment.name}</Table.Cell>
-                <Table.Cell>{equipment.description}</Table.Cell>
-                <Table.Cell>{equipment.make}</Table.Cell>
-                <Table.Cell>{equipment.type?.name ?? ""}</Table.Cell>
-              </Table.Row>
+              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <TableCell>{equipment.name}</TableCell>
+                <TableCell>{equipment.description}</TableCell>
+                <TableCell>{equipment.make}</TableCell>
+                <TableCell>{equipment.type?.name ?? ""}</TableCell>
+              </TableRow>
             );
           })}
-        </Table.Body>
+        </TableBody>
       </Table>
     </div>
   );
