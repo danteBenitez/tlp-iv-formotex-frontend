@@ -5,7 +5,7 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import useAuth from "@/features/auth/hooks/use-auth";
-import { Clipboard } from "lucide-react";
+import { Clipboard, DoorClosed } from "lucide-react";
 import { ReactNode } from "react";
 import BrandText from "./brand-text";
 
@@ -23,7 +23,9 @@ export default function Sidebar() {
           <BrandText />
           <SidebarLinks />
           <div className="mt-auto flex">
-            <Button onClick={signOut} />
+            <Button onClick={signOut} className="">
+              <DoorClosed />
+            </Button>
           </div>
         </div>
       </aside>

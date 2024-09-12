@@ -1,8 +1,11 @@
 import InventoryTable from "@/features/inventory/componentes/table";
 import { Button } from "flowbite-react";
 import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function InventoryPage() {
+  const navigate = useNavigate();
+
   return (
     <main className="p-5 w-full mt-5">
       <div className="flex gap-2 flex-col">
@@ -15,7 +18,7 @@ export default function InventoryPage() {
         </p>
       </div>
       <div>
-        <Button>
+        <Button onClick={() => navigate("/inventory/form")}>
           <div className="flex gap-2 items-center">
             <FaPlus className="text-sm" />
             <div className="text-sm">Crear equipo</div>

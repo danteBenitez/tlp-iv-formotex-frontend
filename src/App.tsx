@@ -6,6 +6,7 @@ import PrivateRoute from "./features/common/private-route";
 import PublicRoute from "./features/common/public-route";
 import InventoryLayout from "./layouts/inventory-layout";
 import LoginPage from "./pages/auth/login";
+import EquipmentFormPage from "./pages/equipment-form";
 import InventoryPage from "./pages/inventory";
 
 const router = createBrowserRouter([
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <InventoryPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/inventory/form/:equipmentId?",
+        element: (
+          <PrivateRoute>
+            <EquipmentFormPage />
           </PrivateRoute>
         ),
       },
