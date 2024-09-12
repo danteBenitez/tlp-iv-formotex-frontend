@@ -1,6 +1,9 @@
+import Input from "@/features/common/components/form/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Label, TextInput } from "flowbite-react";
-import { Form, useForm } from "react-hook-form";
+import { AxiosError } from "axios";
+import { Button, Label } from "flowbite-react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
 import useAuth from "../hooks/use-auth";
 
@@ -16,6 +19,10 @@ const signInSchema = z.object({
 export default function LoginForm() {
   const { signIn } = useAuth();
   const form = useForm<z.infer<typeof signInSchema>>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
     resolver: zodResolver(signInSchema),
   });
 
@@ -27,6 +34,9 @@ export default function LoginForm() {
       });
       return body;
     } catch (err) {
+      if (err instanceof AxiosError) {
+        toast.error(err.response?.data.message);
+      }
       console.error("Error al iniciar sesión.", err);
     }
   };
@@ -37,40 +47,38 @@ export default function LoginForm() {
         <span>Inicia sesión en</span>
         <div className="d-block text-5xl font-bold">Formotex</div>
       </h2>
-      <Form {...form}>
-        <form
-          className="flex flex-col gap-4 text-xl"
-          onSubmit={form.handleSubmit(onSubmit, (e) => console.error(e))}
-        >
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="username" value="Tu nombre de usuario" />
-            </div>
-            <TextInput
-              id="email1"
-              type="text"
-              placeholder="my-username"
-              {...form.register("username")}
-              required
-            />
+      <form
+        className="flex flex-col gap-4 text-xl"
+        onSubmit={form.handleSubmit(onSubmit, (e) => console.error(e))}
+      >
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="username" value="Tu nombre de usuario" />
           </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="password1" value="Tu contraseña" />
-            </div>
-            <TextInput
-              id="password1"
-              type="password"
-              required
-              placeholder="******"
-              {...form.register("password")}
-            />
+          <Input
+            type="text"
+            placeholder="my-username"
+            error={form.formState.errors.username?.message}
+            {...form.register("username")}
+          />
+        </div>
+        <div>
+          <div className="mb-2 block">
+            <Label htmlFor="password1" value="Tu contraseña" />
           </div>
-          <Button type="button" onClick={form.handleSubmit(onSubmit)}>
-            Iniciar sesión
-          </Button>
-        </form>
-      </Form>
+          <Input
+            id="password1"
+            type="password"
+            required
+            placeholder="******"
+            error={form.formState.errors.password?.message}
+            {...form.register("password")}
+          />
+        </div>
+        <Button type="button" onClick={form.handleSubmit(onSubmit)}>
+          Iniciar sesión
+        </Button>
+      </form>
     </div>
   );
 }
