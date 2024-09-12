@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthProvider from "./features/auth/context/provider";
 import PrivateRoute from "./features/common/private-route";
 import PublicRoute from "./features/common/public-route";
+import InventoryLayout from "./layouts/inventory-layout";
 import LoginPage from "./pages/auth/login";
 import InventoryPage from "./pages/inventory";
 
@@ -27,11 +28,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/inventory",
-    element: (
-      <PrivateRoute>
-        <InventoryPage />
-      </PrivateRoute>
-    ),
+    element: <InventoryLayout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <InventoryPage />
+          </PrivateRoute>
+        ),
+      },
+    ],
   },
 ]);
 
