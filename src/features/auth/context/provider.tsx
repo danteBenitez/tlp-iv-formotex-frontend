@@ -16,6 +16,20 @@ type AuthContext = {
   isAdmin: boolean;
   isAuthenticated: boolean;
   loading: boolean;
+  status: "unauthenticated" | "loading" | "authenticated";
+};
+
+const getStatus = (
+  loading: boolean,
+  user: User | null | undefined,
+  token: string | null
+): AuthContext["status"] => {
+  if (!token) {
+    return "unauthenticated";
+  }
+  if (loading) return "loading";
+  if (!loading && user) return "authenticated";
+  return "unauthenticated";
 };
 
 export const AuthContext = createContext<AuthContext | null>(null);
@@ -25,11 +39,7 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const {
-    value: token,
-    loading: tokenLoading,
-    setItem: setToken,
-  } = useSecureStorage("token");
+  const { value: token, setItem: setToken } = useSecureStorage("token");
 
   const getUser = useCallback(async () => {
     if (!token) return null;
@@ -67,8 +77,9 @@ export default function AuthProvider({
     setToken(null);
   };
 
-  const loading = userLoading || tokenLoading;
+  const loading = userLoading;
   const isAuthenticated = !!token && !!user && !loading;
+  const status = getStatus(loading, user as User, token);
 
   return (
     <AuthContext.Provider
@@ -81,6 +92,7 @@ export default function AuthProvider({
           signOut,
           loading,
           isAuthenticated,
+          status,
         } as AuthContext
       }
     >
