@@ -29,7 +29,7 @@ const getStatus = (
   }
   if (loading) return "loading";
   if (!loading && user) return "authenticated";
-  return "unauthenticated";
+  return "loading";
 };
 
 export const AuthContext = createContext<AuthContext | null>(null);
