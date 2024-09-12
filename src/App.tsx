@@ -1,18 +1,27 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthProvider from "./features/auth/context/provider";
+import PrivateRoute from "./features/common/private-route";
+import PublicRoute from "./features/common/public-route";
 import LoginPage from "./pages/auth/login";
-import Home from "./pages/home";
+import InventoryPage from "./pages/inventory";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
+    path: "/auth/login",
+    element: (
+      <PublicRoute>
+        <LoginPage />
+      </PublicRoute>
+    ),
   },
   {
-    path: "/auth/login",
-    index: true,
-    element: <LoginPage />,
+    path: "/inventory",
+    element: (
+      <PrivateRoute>
+        <InventoryPage />
+      </PrivateRoute>
+    ),
   },
 ]);
 
