@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import {
+  Card,
   CardContent,
   CardFooter,
   CardHeader,
@@ -17,7 +18,6 @@ import {
 import Input from "@/features/common/components/form/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { Card } from "flowbite-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
