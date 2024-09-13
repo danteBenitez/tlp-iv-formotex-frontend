@@ -6,8 +6,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Spinner from "@/features/common/components/spinner";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { getAllEquipment } from "../services/inventory";
 
@@ -24,7 +24,7 @@ export default function InventoryTable() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <Spinner />
+        <Spinner className="size-42" />
       </div>
     );
   }
