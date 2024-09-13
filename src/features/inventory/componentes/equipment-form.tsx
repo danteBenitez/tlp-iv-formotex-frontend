@@ -57,10 +57,10 @@ import {
   EQUIPMENT_STATES,
   EquipmentState,
 } from "../consts/equipment-state";
+import { getEquipmentTypes } from "../services/equipment-types";
 import {
   createEquipmentWithUnits,
   getEquipment,
-  getEquipmentTypes,
   getOrganizations,
   updateEquipmentWithUnits,
 } from "../services/inventory";

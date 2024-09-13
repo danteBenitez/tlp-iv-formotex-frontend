@@ -6,7 +6,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import useAuth from "@/features/auth/hooks/use-auth";
-import { Clipboard, DoorClosed } from "lucide-react";
+import { Clipboard, DoorClosed, Laptop } from "lucide-react";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import BrandText from "./brand-text";
@@ -38,8 +38,13 @@ export default function Sidebar() {
 function SidebarLinks() {
   return (
     <NavigationMenu className="flex flex-col w-full justify-stretch min-w-full *:w-full">
-      <NavigationMenuList className="w-full min-w-full flex items-stretch">
+      <NavigationMenuList className="w-full min-w-full flex flex-col items-stretch">
         <SidebarLink text="Inventario" icon={<Clipboard />} to="/inventory" />
+        <SidebarLink
+          text="Tipos de equipo"
+          icon={<Laptop />}
+          to="/inventory/types"
+        />
       </NavigationMenuList>
     </NavigationMenu>
   );

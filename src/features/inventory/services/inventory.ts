@@ -1,6 +1,5 @@
 import { api } from "@/features/common/api";
 import { Equipment } from "../interface/equipment";
-import { EquipmentType } from "../interface/equipment-type";
 import { EquipmentUnit } from "../interface/equipment-unit";
 import { Organization } from "../interface/organization";
 
@@ -62,14 +61,5 @@ export async function getOrganizations(): Promise<Organization[]> {
     } catch (err) {
         console.error(`Error al recuperar organizaciones`, err);
         throw err;
-    }
-}
-
-export async function getEquipmentTypes() {
-    try {
-        const response = await api.get<EquipmentType[]>('/equipment/types');
-        return response.data;
-    } catch (err) {
-        console.error("Error al recuperar tipos de equipamiento", err);
     }
 }
