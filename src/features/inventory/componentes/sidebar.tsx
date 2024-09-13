@@ -3,10 +3,12 @@ import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import useAuth from "@/features/auth/hooks/use-auth";
 import { Clipboard, DoorClosed } from "lucide-react";
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import BrandText from "./brand-text";
 
 export default function Sidebar() {
@@ -16,10 +18,10 @@ export default function Sidebar() {
     <div className="h-screen bg-white dark:bg-slate-900">
       <aside
         id="sidebar"
-        className="static left-0 top-0 z-40 h-screen w-64 transition-transform"
+        className="static left-0 top-0 z-40 h-screen w-72 transition-transform"
         aria-label="Sidebar"
       >
-        <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 dark:border-slate-700 dark:bg-slate-900">
+        <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-whit px-3 py-4 dark:border-slate-700 dark:bg-slate-900 w-full">
           <BrandText />
           <SidebarLinks />
           <div className="mt-auto flex">
@@ -35,23 +37,26 @@ export default function Sidebar() {
 
 function SidebarLinks() {
   return (
-    <NavigationMenu className="flex flex-col w-full justify-start">
-      <NavigationMenuList>
-        <SidebarLink text="Inventario" icon={<Clipboard />} />
+    <NavigationMenu className="flex flex-col w-full justify-stretch min-w-full *:w-full">
+      <NavigationMenuList className="w-full min-w-full flex items-stretch">
+        <SidebarLink text="Inventario" icon={<Clipboard />} to="/inventory" />
       </NavigationMenuList>
     </NavigationMenu>
   );
 }
 
-function SidebarLink(props: { icon: ReactNode; text: string }) {
+function SidebarLink(props: { to: string; icon: ReactNode; text: string }) {
   return (
     <NavigationMenuItem
       className={
         "flex items-center font-sans-accent gap-2 text-lg px-3 py-3 w-full"
       }
+      asChild
     >
-      <span className="flex-shrink-0 me-4">{props.icon}</span>
-      <span className="text-nowrap text-xl">{props.text}</span>
+      <Link to={props.to} className={(navigationMenuTriggerStyle(), "w-full")}>
+        <span className="flex-shrink-0 me-4">{props.icon}</span>
+        <span className="text-nowrap text-xl">{props.text}</span>
+      </Link>
     </NavigationMenuItem>
   );
 }

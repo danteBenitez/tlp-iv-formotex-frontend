@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,6 +8,7 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "flowbite-react";
+import { Link } from "react-router-dom";
 import { getAllEquipment } from "../services/inventory";
 
 export default function InventoryTable() {
@@ -49,6 +51,11 @@ export default function InventoryTable() {
                 <TableCell>{equipment.description}</TableCell>
                 <TableCell>{equipment.make}</TableCell>
                 <TableCell>{equipment.type?.name ?? ""}</TableCell>
+                <TableCell>
+                  <Link to={`/inventory/form/${equipment.equipmentId}`}>
+                    <Button variant="ghost">Editar</Button>
+                  </Link>
+                </TableCell>
               </TableRow>
             );
           })}
