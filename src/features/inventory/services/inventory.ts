@@ -44,6 +44,16 @@ export async function createEquipmentWithUnits(params: CreateEquipmentWithUnits)
     }
 }
 
+export async function deleteEquipment(params: { equipmentId: number }) {
+    try {
+        const response = await api.delete(`/equipment/${params.equipmentId}`);
+        return response.data;
+    } catch (err) {
+        console.error(`Error al crear equipamiento con cuerpo: ${params}`, err);
+        throw err;
+    }
+}
+
 export async function updateEquipmentWithUnits(params: { equipmentId: number } & CreateEquipmentWithUnits) {
     try {
         const response = await api.patch<GetEquipmentResponse>(`/equipment/${params.equipmentId}`, params);
