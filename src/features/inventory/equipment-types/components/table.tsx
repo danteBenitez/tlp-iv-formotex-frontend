@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 
 import {
@@ -26,7 +28,8 @@ import {
 } from "@/components/ui/table";
 import Spinner from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -35,6 +38,7 @@ import { z } from "zod";
 import { EquipmentType } from "../../interface/equipment-type";
 import {
   createEquipmentType,
+  deleteEquipmentType,
   getEquipmentType,
   getEquipmentTypes,
   updateEquipmentType,
@@ -88,6 +92,7 @@ export default function EquipmentTypesTable() {
                   >
                     Editar
                   </Button>
+                  <DeleteButton equipmentTypeId={type.equipmentTypeId} />
                 </TableCell>
               </TableRow>
             );
@@ -217,5 +222,77 @@ export function AddTypeForm(props: {
         <Button type="submit">Enviar</Button>
       </form>
     </Form>
+  );
+}
+
+export function DeleteButton({ equipmentTypeId }: { equipmentTypeId: number }) {
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: deleteEquipmentType,
+    mutationKey: ["inventory", "equipment", "delete", equipmentTypeId],
+  });
+  const [show, setShow] = useState(false);
+  const client = useQueryClient();
+
+  const handleDelete = async (equipmentTypeId: number) => {
+    try {
+      await mutateAsync({ equipmentTypeId: equipmentTypeId });
+      await client.invalidateQueries({
+        queryKey: ["inventory", "equipment", "types"],
+      });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error("Existen equipo con este tipo. No es posible borrarlo");
+        }
+      }
+    }
+  };
+  return (
+    <>
+      <Dialog open={show} modal={true} onOpenChange={(open) => setShow(open)}>
+        <DialogTrigger asChild>
+          <Button
+            variant="destructive"
+            onClick={() => setShow(true)}
+            disabled={isPending}
+          >
+            Eliminar
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader className="flex flex-col gap-5">
+            <DialogTitle>
+              ¿Estás seguro de que desea eliminar el tipo?
+            </DialogTitle>
+            <DialogDescription>
+              No podrá eliminar un tipo con equipos asociados
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-2 justify-end">
+            <DialogClose asChild>
+              <Button
+                onClick={() => {
+                  setShow(false);
+                }}
+                variant="secondary"
+              >
+                Cancelar
+              </Button>
+            </DialogClose>
+            <Button
+              disabled={isPending}
+              type="submit"
+              variant="destructive"
+              onClick={() => {
+                handleDelete(equipmentTypeId);
+                setShow(false);
+              }}
+            >
+              Eliminar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

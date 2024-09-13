@@ -43,3 +43,13 @@ export async function updateEquipmentType(params: { equipmentTypeId: number } & 
         throw err;
     }
 }
+
+export async function deleteEquipmentType(params: { equipmentTypeId: number }) {
+    try {
+        const response = await api.delete<null>(`/equipment/types/${params.equipmentTypeId}`);
+        return response.data;
+    } catch (err) {
+        console.error("Error al eliminar tipo de equipo", err);
+        throw err;
+    }
+}
