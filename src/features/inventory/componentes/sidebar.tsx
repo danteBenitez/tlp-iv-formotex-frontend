@@ -36,6 +36,7 @@ export default function Sidebar() {
 }
 
 function SidebarLinks() {
+  const { isAdmin } = useAuth();
   return (
     <NavigationMenu className="flex flex-col w-full justify-stretch min-w-full *:w-full">
       <NavigationMenuList className="w-full min-w-full flex flex-col items-stretch">
@@ -45,12 +46,20 @@ function SidebarLinks() {
           icon={<Laptop />}
           to="/dashboard/types"
         />
-        <SidebarLink text="Usuarios" icon={<Users />} to="/dashboard/users" />
-        <SidebarLink
-          text="Organizaciones"
-          icon={<Building />}
-          to="/dashboard/organizations"
-        />
+        {isAdmin && (
+          <>
+            <SidebarLink
+              text="Usuarios"
+              icon={<Users />}
+              to="/dashboard/users"
+            />
+            <SidebarLink
+              text="Organizaciones"
+              icon={<Building />}
+              to="/dashboard/organizations"
+            />
+          </>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );

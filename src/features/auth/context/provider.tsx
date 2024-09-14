@@ -5,14 +5,21 @@ import { useQuery } from "@tanstack/react-query";
 import { createContext, useCallback, useEffect } from "react";
 import { ROLES } from "../const/roles";
 import { User } from "../interfaces/user";
-import { SignInParams, signIn as signInService } from "../services/auth";
+import {
+  SignInParams,
+  signIn as signInService,
+  SignUpParams,
+  signUp as signUpService,
+} from "../services/auth";
 
 type AuthContext = {
   signIn: (user: SignInParams) => Promise<void>;
   signOut: () => void;
+  signUp: (user: SignUpParams) => Promise<void>;
 } & {
   user: User | null;
   token: string | null;
+  isEmployee: boolean;
   isAdmin: boolean;
   isAuthenticated: boolean;
   loading: boolean;
@@ -58,10 +65,16 @@ export default function AuthProvider({
   });
 
   const isAdmin = user?.roles.some((role) => role.name === ROLES.ADMIN);
+  const isEmployee = user?.roles.some((role) => role.name == ROLES.EMPLOYEE);
 
   const signIn = async (fields: SignInParams) => {
     const response = await signInService(fields);
     setToken(response.data.token);
+  };
+
+  const signUp = async (fields: SignUpParams) => {
+    const response = await signUpService(fields);
+    setToken(response.token);
   };
 
   useEffect(() => {
@@ -88,6 +101,8 @@ export default function AuthProvider({
           user,
           token,
           isAdmin,
+          signUp,
+          isEmployee,
           signIn,
           signOut,
           loading,

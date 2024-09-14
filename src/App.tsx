@@ -6,6 +6,7 @@ import PrivateRoute from "./features/common/private-route";
 import PublicRoute from "./features/common/public-route";
 import InventoryLayout from "./layouts/inventory-layout";
 import LoginPage from "./pages/auth/login";
+import RegisterPage from "./pages/auth/register";
 import UsersTablePage from "./pages/dashboard/users-table";
 import EquipmentFormPage from "./pages/equipment-form";
 import EquipmentTypesPage from "./pages/equipment-types";
@@ -27,6 +28,14 @@ const router = createBrowserRouter([
     element: (
       <PublicRoute>
         <LoginPage />
+      </PublicRoute>
+    ),
+  },
+  {
+    path: "/auth/register",
+    element: (
+      <PublicRoute>
+        <RegisterPage />
       </PublicRoute>
     ),
   },

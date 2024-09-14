@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 import { z } from "zod";
 import useAuth from "../hooks/use-auth";
 
@@ -103,7 +104,13 @@ export default function LoginForm() {
               )}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col w-full items-start gap-2">
+            <div className="text-sm">
+              ¿Aún no tienes una cuenta?
+              <Button variant="link">
+                <Link to="/auth/register">Regístrate</Link>
+              </Button>
+            </div>
             <Button className="w-full">Iniciar sesión</Button>
           </CardFooter>
         </Card>

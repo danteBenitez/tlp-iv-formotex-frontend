@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import useAuth from "../auth/hooks/use-auth";
 
 export default function PublicRoute({ children }: { children: ReactNode }) {
-  const { status } = useAuth();
+  const { status, isEmployee, isAdmin } = useAuth();
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-100">
@@ -13,7 +13,7 @@ export default function PublicRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  if (status === "authenticated") {
+  if (status === "authenticated" && (isEmployee || isAdmin)) {
     return <Navigate to="/dashboard" />;
   }
 
