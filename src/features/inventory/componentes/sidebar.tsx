@@ -15,10 +15,10 @@ export default function Sidebar() {
   const { signOut } = useAuth();
 
   return (
-    <div className="h-screen bg-white dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <aside
         id="sidebar"
-        className="static left-0 top-0 z-40 h-screen w-72 transition-transform"
+        className="fixed left-0 bottom-0 z-40 h-screen w-72 transition-transform"
         aria-label="Sidebar"
       >
         <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-whit px-3 py-4 dark:border-slate-700 dark:bg-slate-900 w-full">

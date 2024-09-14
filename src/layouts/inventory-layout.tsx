@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 export default function InventoryLayout() {
   return (
-    <div className="flex h-full">
+    <div className="grid grid-cols-[18rem_1fr]">
       <Sidebar />
       <Outlet />
     </div>
