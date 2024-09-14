@@ -6,7 +6,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import useAuth from "@/features/auth/hooks/use-auth";
-import { Clipboard, DoorClosed, Laptop } from "lucide-react";
+import { Building, Clipboard, DoorClosed, Laptop } from "lucide-react";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import BrandText from "./brand-text";
@@ -44,6 +44,11 @@ function SidebarLinks() {
           text="Tipos de equipo"
           icon={<Laptop />}
           to="/inventory/types"
+        />
+        <SidebarLink
+          text="Organizaciones"
+          icon={<Building />}
+          to="/inventory/organizations"
         />
       </NavigationMenuList>
     </NavigationMenu>

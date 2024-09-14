@@ -8,3 +8,11 @@ export default function Spinner({ className }: { className: string }) {
     />
   );
 }
+
+export function CenteredSpinner() {
+  return (
+    <div className="flex justify-center items-center h-full">
+      <Spinner className="size-42" />
+    </div>
+  );
+}

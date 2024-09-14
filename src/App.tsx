@@ -9,6 +9,7 @@ import LoginPage from "./pages/auth/login";
 import EquipmentFormPage from "./pages/equipment-form";
 import EquipmentTypesPage from "./pages/equipment-types";
 import InventoryPage from "./pages/inventory";
+import OrganizationsPage from "./pages/organizations";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <EquipmentTypesPage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/inventory/organizations",
+        element: (
+          <PrivateRoute>
+            <OrganizationsPage />
           </PrivateRoute>
         ),
       },
