@@ -1,7 +1,7 @@
 import { RoleName } from "../const/roles";
 
 export type User = {
-    userId: string;
+    userId: number;
     email: string;
     roles: {
         roleId: number,
