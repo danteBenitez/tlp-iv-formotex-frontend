@@ -2,15 +2,15 @@ import EquipmentTypesTable from "@/features/inventory/equipment-types/components
 
 export default function EquipmentTypesPage() {
   return (
-    <main className="w-full p-8">
+    <main className="p-5 w-full mt-5">
       <div className="flex gap-2 flex-col">
         <h2 className="text-4xl font-bold">Tipos de equipos</h2>
-        <p className="p-2"></p>
+        <p className="p-2">
+          Las distintas categorías de equipos informáticos reconocidas por
+          Formotex.
+        </p>
       </div>
-      
-      <div className="p-2 px-4">
-        <EquipmentTypesTable />
-      </div>
+      <EquipmentTypesTable />
     </main>
   );
 }
