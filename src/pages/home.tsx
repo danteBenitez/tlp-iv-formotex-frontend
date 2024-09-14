@@ -13,5 +13,5 @@ export default function Home() {
     return <Navigate to="/auth/login" />;
   }
 
-  return <Navigate to="/inventory" />;
+  return <Navigate to="/dashboard" />;
 }

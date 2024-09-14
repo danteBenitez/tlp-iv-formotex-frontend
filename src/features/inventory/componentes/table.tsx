@@ -63,7 +63,7 @@ export default function InventoryTable() {
                 <TableCell>{equipment.type?.name ?? ""}</TableCell>
                 <TableCell>
                   <DeleteButton equipmentId={parseInt(equipment.equipmentId)} />
-                  <Link to={`/inventory/form/${equipment.equipmentId}`}>
+                  <Link to={`/dashboard/form/${equipment.equipmentId}`}>
                     <Button variant="ghost">Editar</Button>
                   </Link>
                 </TableCell>

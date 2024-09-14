@@ -3,8 +3,14 @@ import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import useAuth from "../auth/hooks/use-auth";
 
-export default function PrivateRoute({ children }: { children: ReactNode }) {
-  const { status } = useAuth();
+export default function PrivateRoute({
+  children,
+  needsAdmin,
+}: {
+  children: ReactNode;
+  needsAdmin?: boolean;
+}) {
+  const { status, isAdmin } = useAuth();
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-100">
@@ -13,7 +19,7 @@ export default function PrivateRoute({ children }: { children: ReactNode }) {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (status === "unauthenticated" || (!isAdmin && needsAdmin)) {
     return <Navigate to="/auth/login" />;
   }
 

@@ -6,6 +6,7 @@ import PrivateRoute from "./features/common/private-route";
 import PublicRoute from "./features/common/public-route";
 import InventoryLayout from "./layouts/inventory-layout";
 import LoginPage from "./pages/auth/login";
+import UsersTablePage from "./pages/dashboard/users-table";
 import EquipmentFormPage from "./pages/equipment-form";
 import EquipmentTypesPage from "./pages/equipment-types";
 import InventoryPage from "./pages/inventory";
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/inventory",
+    path: "/dashboard",
     element: <InventoryLayout />,
     children: [
       {
@@ -42,7 +43,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/inventory/types",
+        path: "/dashboard/users",
+        element: (
+          <PrivateRoute needsAdmin={true}>
+            <UsersTablePage />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard/types",
         element: (
           <PrivateRoute>
             <EquipmentTypesPage />
@@ -50,7 +59,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/inventory/organizations",
+        path: "/dashboard/organizations",
         element: (
           <PrivateRoute>
             <OrganizationsPage />
@@ -58,7 +67,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/inventory/form/:equipmentId?",
+        path: "/dashboard/form/:equipmentId?",
         element: (
           <PrivateRoute>
             <EquipmentFormPage />

@@ -14,7 +14,7 @@ export default function PublicRoute({ children }: { children: ReactNode }) {
   }
 
   if (status === "authenticated") {
-    return <Navigate to="/inventory" />;
+    return <Navigate to="/dashboard" />;
   }
 
   return children;

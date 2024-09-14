@@ -144,7 +144,7 @@ export default function EquipmentForm() {
       await client.invalidateQueries({
         queryKey: ["inventory", "equipment"],
       });
-      navigate("/inventory");
+      navigate("/dashboard");
     } catch (err) {
       toast.error("Ha ocurrido un error" + err);
     }

@@ -18,7 +18,7 @@ export default function InventoryPage() {
         </p>
       </div>
       <div>
-        <Button onClick={() => navigate("/inventory/form")}>
+        <Button onClick={() => navigate("/dashboard/form")}>
           <div className="flex gap-2 items-center">
             <PlusIcon className="text-sm" />
             <div className="text-sm">Crear equipo</div>
