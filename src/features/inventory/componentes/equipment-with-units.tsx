@@ -12,6 +12,8 @@ import {
 import { Table, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { usePrefetchQuery, useQuery } from "@tanstack/react-query";
+import { CheckCircle, PackageCheck, ServerCrash, Wrench } from "lucide-react";
+import { ReactNode } from "react";
 import {
   useFieldArray,
   UseFieldArrayReturn,
@@ -81,6 +83,19 @@ export function EquipmentUnitList() {
   );
 }
 
+const STATE_TO_CLASSNAME: Record<EquipmentState, string> = {
+  [EQUIPMENT_STATES.DELIVERED]: "border-blue-400",
+  [EQUIPMENT_STATES.IN_MAINTENANCE]: "border-yellow-400",
+  [EQUIPMENT_STATES.NEEDS_REPAIR]: "border-red-500",
+  [EQUIPMENT_STATES.OK]: "border-green-400",
+};
+const STATE_TO_ICON: Record<EquipmentState, ReactNode> = {
+  [EQUIPMENT_STATES.DELIVERED]: <PackageCheck className="size-4" />,
+  [EQUIPMENT_STATES.IN_MAINTENANCE]: <Wrench className="size-4" />,
+  [EQUIPMENT_STATES.NEEDS_REPAIR]: <ServerCrash className="size-4" />,
+  [EQUIPMENT_STATES.OK]: <CheckCircle className="size-4" />,
+};
+
 export function EquipmentUnitFormRow({
   form,
   i,
@@ -137,14 +152,24 @@ export function EquipmentUnitFormRow({
             form.setValue(`units.${i}.state`, value as EquipmentState)
           }
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger
+            className={cn(
+              "w-[180px] border-2",
+              STATE_TO_CLASSNAME[form.watch(`units.${i}.state`)]
+            )}
+          >
             <SelectValue placeholder="Seleccione un estado" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               {ALLOWED_EQUIPMENT_STATES.map((state) => {
                 return (
-                  <SelectItem value={state}>{DISPLAY_STATES[state]}</SelectItem>
+                  <SelectItem value={state}>
+                    <div className="flex gap-2 items-center">
+                      <div>{STATE_TO_ICON[state as EquipmentState]}</div>
+                      <p className="text-nowrap">{DISPLAY_STATES[state]}</p>
+                    </div>
+                  </SelectItem>
                 );
               })}
             </SelectGroup>
