@@ -163,7 +163,11 @@ export function EquipmentUnitFormRow({
       <TableCell>
         {!isLoading && organizations && (
           <Select
-            value={form.getValues(`units.${i}.organizationId`).toString()}
+            value={form.watch(`units.${i}.organizationId`).toString()}
+            onValueChange={(v) => {
+              console.log({ v, i });
+              form.setValue(`units.${i}.organizationId`, parseInt(v));
+            }}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Seleccione una organización" />
