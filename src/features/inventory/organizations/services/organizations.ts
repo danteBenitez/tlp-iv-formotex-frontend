@@ -11,8 +11,11 @@ export async function getOrganizations() {
     }
 }
 
-export async function getOrganization(params: { organizationId: number }) {
+export async function getOrganization(params: { organizationId?: number }) {
     try {
+        if (!params.organizationId) {
+            return null;
+        }
         const response = await api.get<Organization>(`/organizations/${params.organizationId}`);
         return response.data;
     } catch (err) {

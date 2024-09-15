@@ -36,16 +36,24 @@ export default function Sidebar() {
 }
 
 function SidebarLinks() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isEmployee } = useAuth();
   return (
     <NavigationMenu className="flex flex-col w-full justify-stretch min-w-full *:w-full">
       <NavigationMenuList className="w-full min-w-full flex flex-col items-stretch">
-        <SidebarLink text="Inventario" icon={<Clipboard />} to="/dashboard" />
-        <SidebarLink
-          text="Tipos de equipo"
-          icon={<Laptop />}
-          to="/dashboard/types"
-        />
+        {isEmployee && (
+          <>
+            <SidebarLink
+              text="Inventario"
+              icon={<Clipboard />}
+              to="/dashboard"
+            />
+            <SidebarLink
+              text="Tipos de equipo"
+              icon={<Laptop />}
+              to="/dashboard/types"
+            />
+          </>
+        )}
         {isAdmin && (
           <>
             <SidebarLink

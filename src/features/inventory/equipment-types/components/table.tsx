@@ -142,7 +142,7 @@ function AddTypeDialog(props: {
           </DialogHeader>
           {!isLoading && (
             <AddTypeForm
-              defaultValues={equipmentType}
+              defaultValues={equipmentType ?? undefined}
               onSubmit={() => props.setOpen(false)}
             />
           )}

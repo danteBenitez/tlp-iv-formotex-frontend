@@ -11,8 +11,11 @@ export async function getEquipmentTypes() {
     }
 }
 
-export async function getEquipmentType(params: { equipmentTypeId: number }) {
+export async function getEquipmentType(params: { equipmentTypeId?: number }) {
     try {
+        if (!params.equipmentTypeId) {
+            return null;
+        }
         const response = await api.get<EquipmentType>(`/equipment/types/${params.equipmentTypeId}`);
         return response.data;
     } catch (err) {

@@ -107,7 +107,7 @@ export default function OrganizationTable() {
 function AddOrgButton(props: { open: boolean; setOpen: (v: boolean) => void }) {
   const [params, setParams] = useSearchParams();
 
-  const { data: equipmentType, isLoading } = useQuery({
+  const { data: organization, isLoading } = useQuery({
     queryKey: ["inventory", "organizations", params.get("organizationId")],
     queryFn: () =>
       getOrganization({
@@ -133,9 +133,10 @@ function AddOrgButton(props: { open: boolean; setOpen: (v: boolean) => void }) {
             <DialogTitle>Agregar una organización</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
+          {isLoading && <CenteredSpinner />}
           {!isLoading && (
             <AddOrgForm
-              defaultValues={equipmentType}
+              defaultValues={organization ?? undefined}
               onSubmit={() => props.setOpen(false)}
             />
           )}
@@ -199,7 +200,7 @@ export function AddOrgForm(props: {
             <FormItem>
               <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input placeholder="Nombre de tipo" {...field} />
+                <Input placeholder="Nombre de la organización" {...field} />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
