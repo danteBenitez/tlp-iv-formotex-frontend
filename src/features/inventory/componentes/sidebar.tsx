@@ -76,14 +76,12 @@ function SidebarLinks() {
 function SidebarLink(props: { to: string; icon: ReactNode; text: string }) {
   return (
     <NavigationMenuItem
-      className={
-        "flex items-center font-sans-accent gap-2 text-lg px-3 py-3 w-full"
-      }
+      className={"flex items-center font-sans-accent gap-2 px-3 py-3 w-full"}
       asChild
     >
       <Link to={props.to} className={(navigationMenuTriggerStyle(), "w-full")}>
         <span className="flex-shrink-0 me-4">{props.icon}</span>
-        <span className="text-nowrap text-xl">{props.text}</span>
+        <span className="text-nowrap text-[1.2rem]">{props.text}</span>
       </Link>
     </NavigationMenuItem>
   );
