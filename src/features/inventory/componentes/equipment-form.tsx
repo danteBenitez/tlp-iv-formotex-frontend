@@ -64,6 +64,7 @@ import {
   getOrganizations,
   updateEquipmentWithUnits,
 } from "../services/inventory";
+import DatePicker from "./date-picker";
 
 // TODO: Refactorizar archivo
 
@@ -323,6 +324,7 @@ function EquipmentUnitList() {
               <TableCell>Número de serie</TableCell>
               <TableCell>Locación</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Fecha de adquisición</TableCell>
               <TableCell>Organización</TableCell>
               <TableCell>
                 <span className="sr-only">Acciones</span>
@@ -410,6 +412,12 @@ export function EquipmentUnitFormRow({
         <FormMessage>
           {form.formState.errors.units?.[i]?.state?.message ?? ""}
         </FormMessage>
+      </TableCell>
+      <TableCell>
+        <DatePicker
+          date={form.watch(`units.${i}.acquiredAt`)}
+          onChange={(d) => form.setValue(`units.${i}.acquiredAt`, d)}
+        />
       </TableCell>
       <TableCell>
         {!isLoading && organizations && (
