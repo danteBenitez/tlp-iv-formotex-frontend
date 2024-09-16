@@ -53,8 +53,8 @@ export default function Sidebar() {
           <div className="mt-auto flex flex-col gap-2 w-full">
             <Button
               onClick={signOut}
-              variant="outline"
-              className="w-full flex justify-start p-4"
+              variant="secondary"
+              className="w-full flex justify-center gap-2 p-4"
             >
               <DoorClosed />
               <span>Cerrar sesión</span>
