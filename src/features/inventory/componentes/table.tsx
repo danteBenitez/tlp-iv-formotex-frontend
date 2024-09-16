@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DeleteButton from "@/features/common/components/delete-button";
+import { Pagination } from "@/features/common/components/pagination";
 import Spinner from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -33,7 +34,7 @@ import { deleteEquipment, getAllEquipment } from "../services/inventory";
 export default function InventoryTable() {
   const [params] = useSearchParams();
   const {
-    data: equipments,
+    data: equipmentResult,
     isLoading,
     error,
   } = useQuery({
@@ -41,6 +42,8 @@ export default function InventoryTable() {
     queryFn: () => getAllEquipment(params),
   });
   const client = useQueryClient();
+
+  const { data: equipments, total } = equipmentResult ?? {};
 
   if (isLoading) {
     return (
@@ -104,6 +107,7 @@ export default function InventoryTable() {
           })}
         </TableBody>
       </Table>
+      <div className="mt-auto">{total && <Pagination total={total} />}</div>
     </div>
   );
 }

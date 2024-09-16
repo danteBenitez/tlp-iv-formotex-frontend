@@ -6,7 +6,7 @@ import { Organization } from "../interface/organization";
 export async function getAllEquipment(params?: URLSearchParams) {
     try {
         const urlParams = new URLSearchParams(params);
-        const response = await api.get<Equipment[]>(`/equipment?${urlParams.toString()}`);
+        const response = await api.get<{ data: Equipment[], total: number }>(`/equipment?${urlParams.toString()}`);
         return response.data;
     } catch (err) {
         console.error("Error al recuperar equipamiento", err);
