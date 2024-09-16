@@ -9,7 +9,7 @@ export default function InventoryPage() {
   return (
     <main className="p-5 w-full mt-5">
       <div className="flex gap-2 flex-col">
-        <h2 className="text-4xl font-bold">
+        <h2 className="text-4xl font-bold font-sans-accent">
           Inventario de equipos registrados
         </h2>
         <p className="p-2 text-xl">

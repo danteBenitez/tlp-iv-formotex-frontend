@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "DM Sans";
+  font-weight: 700;
+  src: url(/fonts/DMSans_36pt-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "DM Sans", monospace;
+  font-weight: 800;
+  src: url(/fonts/DMSans_24pt-Bold.ttf) format("truetype");
+}
+
 :root,
 body,
 html,
