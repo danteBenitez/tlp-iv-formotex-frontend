@@ -66,7 +66,7 @@ export default function MakeTable() {
 
   return (
     <div className="overflow-x-auto w-full p-4">
-      <AddOrgButton open={open} setOpen={setOpen} />
+      <AddMakeButton open={open} setOpen={setOpen} />
       <Table>
         <TableHeader>
           <TableCell>Nombre</TableCell>
@@ -102,7 +102,10 @@ export default function MakeTable() {
   );
 }
 
-function AddOrgButton(props: { open: boolean; setOpen: (v: boolean) => void }) {
+function AddMakeButton(props: {
+  open: boolean;
+  setOpen: (v: boolean) => void;
+}) {
   const [params, setParams] = useSearchParams();
 
   const { data: make, isLoading } = useQuery({
@@ -244,6 +247,7 @@ export function DeleteButton({ makeId }: { makeId: string }) {
       if (err instanceof AxiosError) {
         if (err.response?.status == 409) {
           toast.error("Existen equipo con esta marca. No es posible borrarla");
+          return;
         }
       }
       toast.error("No se pudo borrar la marca: " + err);
