@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -25,9 +23,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DeleteButton from "@/features/common/components/delete-button";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,6 +54,27 @@ export default function OrganizationTable() {
 
   const [open, setOpen] = useState(false);
   const [params, setParams] = useSearchParams();
+  const client = useQueryClient();
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteOrganization({
+        organizationId: id,
+      });
+      await client.invalidateQueries({
+        queryKey: ["inventory", "organizations"],
+      });
+      toast.success("Organización eliminada correctamente");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error(err.response.data.message);
+        }
+        return;
+      }
+      toast.error("No se pudo borrar la organización: " + err);
+    }
+  };
 
   if (isLoading) {
     return <CenteredSpinner />;
@@ -94,7 +114,20 @@ export default function OrganizationTable() {
                   >
                     Editar
                   </Button>
-                  <DeleteButton organizationId={org.organizationId} />
+                  <DeleteButton
+                    id={parseInt(org.organizationId)}
+                    mutationKey={[
+                      "inventory",
+                      "organizations",
+                      "delete",
+                      org.organizationId.toString(),
+                    ]}
+                    onDelete={handleDelete}
+                    dialogText={{
+                      title: "¿Está seguro que desea eliminar la organización?",
+                      description: "Esta acción es irreversible",
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             );
@@ -229,77 +262,5 @@ export function AddOrgForm(props: {
         <Button type="submit">Enviar</Button>
       </form>
     </Form>
-  );
-}
-
-export function DeleteButton({ organizationId }: { organizationId: string }) {
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: deleteOrganization,
-    mutationKey: ["inventory", "organizations", "delete", organizationId],
-  });
-  const [show, setShow] = useState(false);
-  const client = useQueryClient();
-
-  const handleDelete = async (equipmentTypeId: number) => {
-    try {
-      await mutateAsync({ organizationId: equipmentTypeId });
-      await client.invalidateQueries({
-        queryKey: ["inventory", "organizations"],
-      });
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        if (err.response?.status == 409) {
-          toast.error(err.response.data.message);
-        }
-        return;
-      }
-      toast.error("No se pudo borrar la organización: " + err);
-    }
-  };
-  return (
-    <>
-      <Dialog open={show} modal={true} onOpenChange={(open) => setShow(open)}>
-        <DialogTrigger asChild>
-          <Button
-            variant="destructive"
-            onClick={() => setShow(true)}
-            disabled={isPending}
-          >
-            Eliminar
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader className="flex flex-col gap-5">
-            <DialogTitle>
-              ¿Estás seguro de que desea eliminar la organización?
-            </DialogTitle>
-            <DialogDescription>Esta acción es irreversible</DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-2 justify-end">
-            <DialogClose asChild>
-              <Button
-                onClick={() => {
-                  setShow(false);
-                }}
-                variant="secondary"
-              >
-                Cancelar
-              </Button>
-            </DialogClose>
-            <Button
-              disabled={isPending}
-              type="submit"
-              variant="destructive"
-              onClick={() => {
-                handleDelete(parseInt(organizationId));
-                setShow(false);
-              }}
-            >
-              Eliminar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
   );
 }

@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -25,9 +23,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DeleteButton from "@/features/common/components/delete-button";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -56,6 +55,8 @@ export default function MakeTable() {
   const [open, setOpen] = useState(false);
   const [params, setParams] = useSearchParams();
 
+  const client = useQueryClient();
+
   if (isLoading) {
     return <CenteredSpinner />;
   }
@@ -63,6 +64,24 @@ export default function MakeTable() {
   if (error) {
     return <p>Ha ocurrido un error: {error.message}</p>;
   }
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteMake({ makeId: id });
+      await client.invalidateQueries({
+        queryKey: ["inventory", "makes"],
+      });
+      toast.success("Marca eliminada exitosamente");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error("Existen equipo con esta marca. No es posible borrarla");
+          return;
+        }
+      }
+      toast.error("No se pudo borrar la marca: " + err);
+    }
+  };
 
   return (
     <div className="overflow-x-auto w-full p-4">
@@ -91,7 +110,20 @@ export default function MakeTable() {
                   >
                     Editar
                   </Button>
-                  <DeleteButton makeId={make.makeId.toString()} />
+                  <DeleteButton
+                    id={make.makeId}
+                    mutationKey={[
+                      "inventory",
+                      "makes",
+                      "delete",
+                      make.makeId.toString(),
+                    ]}
+                    onDelete={handleDelete}
+                    dialogText={{
+                      title: "¿Estás seguro de que desea eliminar la marca?",
+                      description: "Esta acción es irreversible",
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             );
@@ -226,77 +258,5 @@ export function AddMakeForm(props: {
         <Button type="submit">Enviar</Button>
       </form>
     </Form>
-  );
-}
-
-export function DeleteButton({ makeId }: { makeId: string }) {
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: deleteMake,
-    mutationKey: ["inventory", "makes", "delete", makeId],
-  });
-  const [show, setShow] = useState(false);
-  const client = useQueryClient();
-
-  const handleDelete = async (makeId: number) => {
-    try {
-      await mutateAsync({ makeId: makeId });
-      await client.invalidateQueries({
-        queryKey: ["inventory", "makes"],
-      });
-    } catch (err) {
-      if (err instanceof AxiosError) {
-        if (err.response?.status == 409) {
-          toast.error("Existen equipo con esta marca. No es posible borrarla");
-          return;
-        }
-      }
-      toast.error("No se pudo borrar la marca: " + err);
-    }
-  };
-  return (
-    <>
-      <Dialog open={show} modal={true} onOpenChange={(open) => setShow(open)}>
-        <DialogTrigger asChild>
-          <Button
-            variant="destructive"
-            onClick={() => setShow(true)}
-            disabled={isPending}
-          >
-            Eliminar
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader className="flex flex-col gap-5">
-            <DialogTitle>
-              ¿Estás seguro de que desea eliminar la marca?
-            </DialogTitle>
-            <DialogDescription>Esta acción es irreversible</DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-2 justify-end">
-            <DialogClose asChild>
-              <Button
-                onClick={() => {
-                  setShow(false);
-                }}
-                variant="secondary"
-              >
-                Cancelar
-              </Button>
-            </DialogClose>
-            <Button
-              disabled={isPending}
-              type="submit"
-              variant="destructive"
-              onClick={() => {
-                handleDelete(parseInt(makeId));
-                setShow(false);
-              }}
-            >
-              Eliminar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
   );
 }
