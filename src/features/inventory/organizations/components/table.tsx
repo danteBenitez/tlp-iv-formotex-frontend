@@ -28,6 +28,7 @@ import {
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -246,6 +247,12 @@ export function DeleteButton({ organizationId }: { organizationId: string }) {
         queryKey: ["inventory", "organizations"],
       });
     } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error(err.response.data.message);
+        }
+        return;
+      }
       toast.error("No se pudo borrar la organización: " + err);
     }
   };
