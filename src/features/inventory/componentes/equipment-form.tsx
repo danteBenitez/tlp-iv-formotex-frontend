@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import {
+  ControllerRenderProps,
+  FieldValues,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -157,58 +162,37 @@ export default function EquipmentForm() {
             render={({ field }) => (
               <FormItem className="flex flex-col w-1/2 justify-stretch">
                 <FormLabel>Tipo</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value && types
-                          ? types.find(
-                              (item) => item.equipmentTypeId === field.value
-                            )?.name
-                          : "Select item"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="p-0 w-full">
-                    <Command className="w-full min-w-[40vw]">
-                      <CommandInput placeholder="Search ..." />
-                      <CommandEmpty>No found.</CommandEmpty>
-                      <CommandList>
-                        <CommandGroup>
-                          {!isLoading &&
-                            types &&
-                            types.map((item) => (
-                              <CommandItem
-                                value={item.name}
-                                key={item.equipmentTypeId}
-                                onSelect={() => {
-                                  form.setValue("typeId", item.equipmentTypeId);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2",
-                                    item.equipmentTypeId === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {item.name}
-                              </CommandItem>
-                            ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                {!isLoading && types && (
+                  <Combobox
+                    options={types}
+                    field={field}
+                    idFieldName="equipmentTypeId"
+                    formField="typeId"
+                    labelFieldName="name"
+                  />
+                )}
+                <FormDescription>
+                  El tipo del equipo. Elige y busca un tipo
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="makeId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col w-1/2 justify-stretch">
+                <FormLabel>Marca</FormLabel>
+                {!makesLoading && makes && (
+                  <Combobox
+                    options={makes}
+                    field={field}
+                    idFieldName="equipmentTypeId"
+                    formField="typeId"
+                    labelFieldName="name"
+                  />
+                )}
                 <FormDescription>
                   El tipo del equipo. Elige y busca un tipo
                 </FormDescription>
@@ -229,5 +213,78 @@ export default function EquipmentForm() {
         <Button type="submit">{isEditting ? "Guardar" : "Enviar"}</Button>
       </form>
     </Form>
+  );
+}
+
+function Combobox<
+  TFields extends FieldValues,
+  K extends string,
+  T extends { [k in K]: string | number }
+>({
+  field,
+  options,
+  idFieldName,
+  labelFieldName,
+  formField,
+}: {
+  field: ControllerRenderProps<TFields>;
+  options: T[];
+  idFieldName: K;
+  formField: keyof TFields;
+  labelFieldName: K;
+}) {
+  const form = useFormContext();
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <FormControl>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              "justify-between",
+              !field.value && "text-muted-foreground"
+            )}
+          >
+            {field.value && options
+              ? options.find((opt) => opt[idFieldName] === field.value)?.[
+                  labelFieldName
+                ]
+              : "Select item"}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </FormControl>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-full">
+        <Command className="w-full min-w-[40vw]">
+          <CommandInput placeholder="Search ..." />
+          <CommandEmpty>No found.</CommandEmpty>
+          <CommandList>
+            <CommandGroup>
+              {options &&
+                options.map((item) => (
+                  <CommandItem
+                    value={item[idFieldName].toString()}
+                    key={item[idFieldName]}
+                    onSelect={() => {
+                      form.setValue(formField.toString(), item[idFieldName]);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2",
+                        item[idFieldName] === field.value
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                    {item[labelFieldName]}
+                  </CommandItem>
+                ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

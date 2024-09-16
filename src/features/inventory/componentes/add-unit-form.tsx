@@ -12,7 +12,6 @@ export function AddUnitForm(props: {
   const { data: organizations } = useQuery({
     queryKey: ["organizations"],
     queryFn: getOrganizations,
-    staleTime: Infinity,
   });
 
   return (
