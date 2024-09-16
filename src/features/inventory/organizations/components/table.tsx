@@ -158,6 +158,7 @@ function AddOrgButton(props: { open: boolean; setOpen: (v: boolean) => void }) {
           setParams(newParams);
           props.setOpen(true);
         }}
+        className="mb-4"
       >
         Crear organización
       </Button>
