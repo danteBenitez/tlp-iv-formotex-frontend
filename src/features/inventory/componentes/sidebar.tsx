@@ -52,6 +52,11 @@ function SidebarLinks() {
               icon={<Laptop />}
               to="/dashboard/types"
             />
+            <SidebarLink
+              text="Marcas"
+              icon={<Laptop />}
+              to="/dashboard/makes"
+            />
           </>
         )}
         {isAdmin && (
