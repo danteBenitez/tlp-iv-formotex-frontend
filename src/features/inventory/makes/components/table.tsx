@@ -28,6 +28,7 @@ import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -158,6 +159,7 @@ function AddMakeButton(props: {
           props.setOpen(true);
         }}
       >
+        <PlusIcon className="text-sm" />
         Crear marca
       </Button>
       <Dialog open={props.open} modal={true} onOpenChange={props.setOpen}>

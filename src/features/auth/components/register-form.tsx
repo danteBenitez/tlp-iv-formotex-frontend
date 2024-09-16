@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Input from "@/features/common/components/form/input";
+import BrandText from "@/features/inventory/componentes/brand-text";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
@@ -99,7 +100,9 @@ export default function RegisterForm() {
             <CardTitle className="text-2xl">
               <h2 className="text-xl px-5 text-center my-4">
                 <span>Regístrate en</span>
-                <div className="d-block text-5xl font-bold">Formotex</div>
+                <div className="flex justify-center">
+                  <BrandText />
+                </div>
               </h2>
             </CardTitle>
           </CardHeader>
