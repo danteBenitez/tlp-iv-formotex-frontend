@@ -130,7 +130,7 @@ export function EditUserButton(props: { userId: number }) {
             <Alert variant={"destructive"}>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                <AlertTitle>
+                <AlertTitle className="text-xl">
                   Verifica el usuario al que estás asignando el rol.
                 </AlertTitle>
                 <DialogDescription>
