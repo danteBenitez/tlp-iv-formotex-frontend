@@ -12,12 +12,12 @@ export default function InventoryPage() {
         <h2 className="text-4xl font-bold">
           Inventario de equipos registrados
         </h2>
-        <p className="p-2">
+        <p className="p-2 text-xl">
           Aquí puede ver las características de los equipos en el inventario.
           Para ver las unidades disponibles, seleccione un equipo.
         </p>
       </div>
-      <div>
+      <div className="my-5">
         <Button onClick={() => navigate("/dashboard/form")}>
           <div className="flex gap-2 items-center">
             <PlusIcon className="text-sm" />
