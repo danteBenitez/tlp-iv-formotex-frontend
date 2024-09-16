@@ -8,7 +8,6 @@ export default function MakeTablePage() {
       description="Aquí puede gestionar las marcas que Formotex reconoce"
     >
       <MakeTable />
-      <MakeTable />
     </DashboardPage>
   );
 }
