@@ -3,9 +3,10 @@ import { Equipment } from "../interface/equipment";
 import { EquipmentUnit } from "../interface/equipment-unit";
 import { Organization } from "../interface/organization";
 
-export async function getAllEquipment() {
+export async function getAllEquipment(params?: URLSearchParams) {
     try {
-        const response = await api.get<Equipment[]>('/equipment');
+        const urlParams = new URLSearchParams(params);
+        const response = await api.get<Equipment[]>(`/equipment?${urlParams.toString()}`);
         return response.data;
     } catch (err) {
         console.error("Error al recuperar equipamiento", err);
