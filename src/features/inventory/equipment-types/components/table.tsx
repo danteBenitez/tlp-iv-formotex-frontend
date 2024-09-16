@@ -90,7 +90,7 @@ export default function EquipmentTypesTable() {
         <TableBody className="divide-y">
           {types?.map((type) => {
             return (
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <TableRow>
                 <TableCell>{type.name}</TableCell>
                 <TableCell>{type.description}</TableCell>
                 <TableCell>

@@ -49,7 +49,7 @@ export default function InventoryTable() {
         <TableBody className="divide-y">
           {equipments?.map((equipment) => {
             return (
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              <TableRow>
                 <TableCell>{equipment.name}</TableCell>
                 <TableCell>{equipment.description}</TableCell>
                 <TableCell>{equipment.make?.name}</TableCell>

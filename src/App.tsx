@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AuthProvider from "./features/auth/context/provider";
+import ThemeProvider from "./features/common/components/theme-provider";
 import PrivateRoute from "./features/common/private-route";
 import PublicRoute from "./features/common/public-route";
 import InventoryLayout from "./layouts/inventory-layout";
@@ -102,7 +103,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RouterProvider router={router} />;
+        <ThemeProvider>
+          <RouterProvider router={router} />;
+        </ThemeProvider>
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

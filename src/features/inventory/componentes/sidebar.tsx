@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -5,14 +6,25 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Switch } from "@/components/ui/switch";
 import useAuth from "@/features/auth/hooks/use-auth";
-import { Building, Clipboard, DoorClosed, Laptop, Users } from "lucide-react";
+import { useTheme } from "@/features/common/hooks/use-theme";
+import {
+  Building,
+  Clipboard,
+  DoorClosed,
+  Laptop,
+  Moon,
+  Sun,
+  Users,
+} from "lucide-react";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import BrandText from "./brand-text";
 
 export default function Sidebar() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
+  const { theme, toggle } = useTheme();
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
@@ -24,9 +36,28 @@ export default function Sidebar() {
         <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-whit px-3 py-4 dark:border-slate-700 dark:bg-slate-900 w-full">
           <BrandText />
           <SidebarLinks />
-          <div className="mt-auto flex">
-            <Button onClick={signOut} className="">
+          <div className="flex justify-between">
+            <div className="flex gap-2 items-center py-5 p-2">
+              <Avatar>
+                <AvatarFallback>
+                  {user?.username[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span>{user?.username}</span>
+            </div>
+            <div className="flex gap-4 items-center">
+              {theme == "light" ? <Sun /> : <Moon />}
+              <Switch checked={theme == "dark"} onCheckedChange={toggle} />
+            </div>
+          </div>
+          <div className="mt-auto flex flex-col gap-2 w-full">
+            <Button
+              onClick={signOut}
+              variant="outline"
+              className="w-full flex justify-start p-4"
+            >
               <DoorClosed />
+              <span>Cerrar sesión</span>
             </Button>
           </div>
         </div>
