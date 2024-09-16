@@ -37,6 +37,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { getMakes } from "../makes/services/make";
 import { equipmentWithUnitsSchema } from "../schema/equipment-with-units";
 import { getEquipmentTypes } from "../services/equipment-types";
 import {
@@ -59,13 +60,17 @@ export default function EquipmentForm() {
       : {
           name: "",
           description: "",
-          make: "",
+          makeId: 0,
           units: [],
         },
   });
   const { data: types, isLoading } = useQuery({
     queryKey: ["inventory", "equipment", "types"],
     queryFn: getEquipmentTypes,
+  });
+  const { data: makes, isLoading: makesLoading } = useQuery({
+    queryKey: ["inventory", "makes"],
+    queryFn: getMakes,
   });
   const client = useQueryClient();
   const navigate = useNavigate();
@@ -143,14 +148,22 @@ export default function EquipmentForm() {
         <div className="flex flex-col md:flex-row gap-4 w-full md:items-center justify-stretch">
           <FormField
             control={form.control}
-            name="make"
+            name="makeId"
             render={({ field }) => (
-              <FormItem className="w-1/2">
+              <FormItem className="flex flex-col w-1/2 justify-stretch">
                 <FormLabel>Marca</FormLabel>
-                <FormControl>
-                  <Input placeholder="Dell" {...field} />
-                </FormControl>
-                <FormDescription>La marca del equipo</FormDescription>
+                {!makesLoading && makes && (
+                  <Combobox
+                    options={makes}
+                    field={field}
+                    idFieldName="makeId"
+                    formField="makeId"
+                    labelFieldName="name"
+                  />
+                )}
+                <FormDescription>
+                  La marca del equipo. Asegúrate de crearla de ser necesario
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -165,28 +178,6 @@ export default function EquipmentForm() {
                 {!isLoading && types && (
                   <Combobox
                     options={types}
-                    field={field}
-                    idFieldName="equipmentTypeId"
-                    formField="typeId"
-                    labelFieldName="name"
-                  />
-                )}
-                <FormDescription>
-                  El tipo del equipo. Elige y busca un tipo
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="makeId"
-            render={({ field }) => (
-              <FormItem className="flex flex-col w-1/2 justify-stretch">
-                <FormLabel>Marca</FormLabel>
-                {!makesLoading && makes && (
-                  <Combobox
-                    options={makes}
                     field={field}
                     idFieldName="equipmentTypeId"
                     formField="typeId"

@@ -1,3 +1,4 @@
+import { Make } from "../makes/interfaces/make";
 import { EquipmentType } from "./equipment-type";
 import { EquipmentUnit } from "./equipment-unit";
 
@@ -8,5 +9,6 @@ export interface Equipment {
     type?: EquipmentType,
     equipmentUnits: EquipmentUnit[],
     typeId: number,
-    make: string,
+    makeId: number,
+    make?: Make
 }

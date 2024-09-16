@@ -4,7 +4,11 @@ import { ALLOWED_EQUIPMENT_STATES } from "../consts/equipment-state";
 export const equipmentWithUnitsSchema = z.object({
     name: z.string().min(1).max(255),
     description: z.string().min(1).max(9999),
-    make: z.string().min(1).max(255),
+    makeId: z.number({
+        message: "La marca es requerida"
+    }).int({
+        message: "El ID de marca debe ser un entero"
+    }),
     typeId: z.number(),
     units: z
         .object({
