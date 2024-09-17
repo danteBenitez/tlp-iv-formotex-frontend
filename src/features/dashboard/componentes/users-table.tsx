@@ -32,6 +32,7 @@ import { RoleName, ROLES } from "@/features/auth/const/roles";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { Info, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -227,6 +228,12 @@ function UserForm(props: { onSubmit: () => void }) {
       });
       props.onSubmit();
     } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error("Nombre de usuario o correo electrónico en uso");
+          return;
+        }
+      }
       toast.error("Ha ocurrido un error: " + err);
     }
   }
