@@ -65,6 +65,46 @@ export async function updateEquipmentWithUnits(params: { equipmentId: number } &
     }
 }
 
+export async function getEquipmentUnits(params: URLSearchParams) {
+    try {
+        const response = await api.get<EquipmentUnit[]>(`/equipment/units/?${params.toString()}`);
+        return response.data;
+    } catch (err) {
+        console.error(`Error al registrar mantenimiento con cuerpo: ${params}`, err);
+        throw err;
+    }
+}
+
+export type RegisterMaintenanceForUnitParams = {
+    equipmentUnitId: number,
+    startDate: Date,
+    endDate: Date
+}
+
+export async function registerMaintenanceForUnit(params: RegisterMaintenanceForUnitParams) {
+    try {
+        const response = await api.post(`/equipment/units/${params.equipmentUnitId}/maintenance`, params);
+        return response.data;
+    } catch (err) {
+        console.error(`Error al registrar mantenimiento con cuerpo: ${params}`, err);
+        throw err;
+    }
+}
+
+export type RegisterDeliveryForUnitParams = {
+    equipmentUnitId: string
+}
+
+export async function registerDeliveryForUnit(params: RegisterDeliveryForUnitParams) {
+    try {
+        const response = await api.post(`/equipment/units/${params.equipmentUnitId}/deliver`, params);
+        return response.data;
+    } catch (err) {
+        console.error(`Error al registrar entrega con cuerpo: ${params}`, err);
+        throw err;
+    }
+}
+
 export async function getOrganizations(): Promise<Organization[]> {
     try {
         const response = await api.get<Organization[]>('/organizations');

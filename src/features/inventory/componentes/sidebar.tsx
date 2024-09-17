@@ -16,6 +16,7 @@ import {
   DoorClosed,
   Laptop,
   Moon,
+  Pen,
   Sun,
   Users,
 } from "lucide-react";
@@ -88,6 +89,11 @@ function SidebarLinks() {
               text="Marcas"
               icon={<Building2 />}
               to="/dashboard/makes"
+            />
+            <SidebarLink
+              text="Actividad"
+              icon={<Pen />}
+              to="/dashboard/activities"
             />
           </>
         )}

@@ -38,7 +38,7 @@ export function AddUnitForm(props: {
         }}
       >
         <PlusIcon />
-        <span className="sr-only">Agregar unidad</span>
+        <span>Agregar unidad</span>
       </Button>
     </div>
   );

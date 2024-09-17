@@ -45,7 +45,7 @@ import {
   getEquipment,
   updateEquipmentWithUnits,
 } from "../services/inventory";
-import { EquipmentUnitList } from "./equipment-with-units";
+import { EquipmentUnitList } from "./equipment-with-units-form";
 
 export default function EquipmentForm() {
   const { equipmentId } = useParams();

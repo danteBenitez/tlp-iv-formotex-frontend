@@ -12,31 +12,18 @@ import {
 import { Table, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { usePrefetchQuery, useQuery } from "@tanstack/react-query";
-import { CheckCircle, PackageCheck, ServerCrash, Wrench } from "lucide-react";
-import { ReactNode } from "react";
-import {
-  useFieldArray,
-  UseFieldArrayReturn,
-  useFormContext,
-  UseFormReturn,
-} from "react-hook-form";
+import { useFieldArray, useFormContext, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import {
   ALLOWED_EQUIPMENT_STATES,
-  EQUIPMENT_STATES,
   EquipmentState,
+  STATE_TO_CLASSNAME,
 } from "../consts/equipment-state";
 import { equipmentWithUnitsSchema } from "../schema/equipment-with-units";
 import { getOrganizations } from "../services/inventory";
 import { AddUnitForm } from "./add-unit-form";
 import DatePicker from "./date-picker";
-
-const DISPLAY_STATES: Record<EquipmentState, string> = {
-  [EQUIPMENT_STATES.OK]: "Funcionando",
-  [EQUIPMENT_STATES.DELIVERED]: "Entregado",
-  [EQUIPMENT_STATES.IN_MAINTENANCE]: "En mantenimiento",
-  [EQUIPMENT_STATES.NEEDS_REPAIR]: "Necesita reparación",
-};
+import EquipmentStateBadge from "./equipment-state-badge";
 
 export function EquipmentUnitList() {
   const form = useFormContext<z.infer<typeof equipmentWithUnitsSchema>>();
@@ -57,6 +44,7 @@ export function EquipmentUnitList() {
           <AddUnitForm units={units} />
         </div>
       )}
+      {units.fields.length !== 0 && <AddUnitForm units={units} />}
       <div className="flex justify-between w-full items-center">
         {units.fields.length !== 0 && (
           <Table>
@@ -74,7 +62,7 @@ export function EquipmentUnitList() {
               </TableCell>
             </TableHeader>
             {units.fields.map((_, i) => {
-              return <EquipmentUnitFormRow form={form} i={i} units={units} />;
+              return <EquipmentUnitFormRow form={form} i={i} />;
             })}
           </Table>
         )}
@@ -83,27 +71,12 @@ export function EquipmentUnitList() {
   );
 }
 
-const STATE_TO_CLASSNAME: Record<EquipmentState, string> = {
-  [EQUIPMENT_STATES.DELIVERED]: "border-blue-400",
-  [EQUIPMENT_STATES.IN_MAINTENANCE]: "border-yellow-400",
-  [EQUIPMENT_STATES.NEEDS_REPAIR]: "border-red-500",
-  [EQUIPMENT_STATES.OK]: "border-green-400",
-};
-const STATE_TO_ICON: Record<EquipmentState, ReactNode> = {
-  [EQUIPMENT_STATES.DELIVERED]: <PackageCheck className="size-4" />,
-  [EQUIPMENT_STATES.IN_MAINTENANCE]: <Wrench className="size-4" />,
-  [EQUIPMENT_STATES.NEEDS_REPAIR]: <ServerCrash className="size-4" />,
-  [EQUIPMENT_STATES.OK]: <CheckCircle className="size-4" />,
-};
-
 export function EquipmentUnitFormRow({
   form,
   i,
-  units,
 }: {
   form: UseFormReturn<z.infer<typeof equipmentWithUnitsSchema>>;
   i: number;
-  units: UseFieldArrayReturn<z.infer<typeof equipmentWithUnitsSchema>>;
 }) {
   const { data: organizations, isLoading } = useQuery({
     queryKey: ["organizations"],
@@ -127,9 +100,10 @@ export function EquipmentUnitFormRow({
       </TableCell>
       <TableCell>
         <Input
+          disabled={!form}
           type="number"
           placeholder={"0000"}
-          {...form.register(`units.${i}.serialNumber`)}
+          {...form?.register(`units.${i}.serialNumber`)}
         />
         <FormMessage>
           {form.formState.errors.units?.[i]?.serialNumber?.message ?? ""}
@@ -165,10 +139,7 @@ export function EquipmentUnitFormRow({
               {ALLOWED_EQUIPMENT_STATES.map((state) => {
                 return (
                   <SelectItem value={state}>
-                    <div className="flex gap-2 items-center">
-                      <div>{STATE_TO_ICON[state as EquipmentState]}</div>
-                      <p className="text-nowrap">{DISPLAY_STATES[state]}</p>
-                    </div>
+                    <EquipmentStateBadge state={state} />
                   </SelectItem>
                 );
               })}
@@ -213,9 +184,6 @@ export function EquipmentUnitFormRow({
         <FormMessage>
           {form.formState.errors.units?.[i]?.state?.message ?? ""}
         </FormMessage>
-      </TableCell>
-      <TableCell>
-        {i == units.fields.length - 1 && <AddUnitForm units={units} />}
       </TableCell>
     </TableRow>
   );

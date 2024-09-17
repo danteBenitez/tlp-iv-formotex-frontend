@@ -22,7 +22,9 @@ export default function DatePicker(props: {
   date?: Date;
   label?: string;
   description?: string;
+  disableFuture?: boolean;
 }) {
+  const disableFuture = props.disableFuture ?? true;
   return (
     <FormItem className="flex flex-col">
       <FormLabel>{props.label}</FormLabel>
@@ -51,7 +53,8 @@ export default function DatePicker(props: {
             selected={props.date}
             onSelect={(d) => d && props.onChange(d)}
             disabled={(date) =>
-              date > new Date() || date < new Date("1900-01-01")
+              (disableFuture && date > new Date()) ||
+              date < new Date("1900-01-01")
             }
             initialFocus
           />
