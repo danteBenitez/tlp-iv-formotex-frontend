@@ -217,6 +217,12 @@ export function AddMakeForm(props: {
       });
       props.onSubmit();
     } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error("Ya existe una marca con ese nombre");
+          return;
+        }
+      }
       toast.error("Ha ocurrido un error: " + err);
     }
   }

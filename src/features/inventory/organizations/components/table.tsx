@@ -219,6 +219,12 @@ export function AddOrgForm(props: {
       });
       props.onSubmit();
     } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 409) {
+          toast.error("Ya existe una organización con ese nombre");
+          return;
+        }
+      }
       toast.error("Ha ocurrido un error: " + err);
     }
   }
