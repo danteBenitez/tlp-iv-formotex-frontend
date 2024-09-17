@@ -86,7 +86,8 @@ export function EquipmentUnitFormRow({
   return (
     <TableRow
       className={cn(
-        form.watch(`units.${i}.deleted`) && "bg-red-200 hover:bg-red-300"
+        form.watch(`units.${i}.deleted`) &&
+          "bg-red-200 hover:bg-red-300 dark:bg-red-900 hover:dark:bg-red-800"
       )}
     >
       <Input type="hidden" value={`units.${i}.equipmentUnitId`} />
