@@ -11,6 +11,7 @@ import useAuth from "@/features/auth/hooks/use-auth";
 import { useTheme } from "@/features/common/hooks/use-theme";
 import {
   Building,
+  Building2,
   Clipboard,
   DoorClosed,
   Laptop,
@@ -85,7 +86,7 @@ function SidebarLinks() {
             />
             <SidebarLink
               text="Marcas"
-              icon={<Laptop />}
+              icon={<Building2 />}
               to="/dashboard/makes"
             />
           </>
