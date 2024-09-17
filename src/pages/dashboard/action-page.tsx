@@ -26,7 +26,7 @@ import {
   registerMaintenanceForUnit,
 } from "@/features/inventory/services/inventory";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { useForm, useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -60,6 +60,7 @@ export function RegisterDelivery() {
   const form = useForm({
     resolver: zodResolver(equipmentUnitIdSchema),
   });
+  const client = useQueryClient();
 
   return (
     <Dialog>
@@ -79,6 +80,9 @@ export function RegisterDelivery() {
                 equipmentUnitId: data.equipmentUnitId.toString(),
               });
               toast.success("Registrada entrega correctamente");
+              await client.invalidateQueries({
+                queryKey: ["inventory", "activities"],
+              });
             }}
           />
         </Form>
@@ -111,6 +115,7 @@ export function RegisterMaintenance() {
     },
     resolver: zodResolver(maintenanceFormSchema),
   });
+  const client = useQueryClient();
 
   return (
     <Dialog>
@@ -159,6 +164,9 @@ export function RegisterMaintenance() {
               if (data.equipmentUnitId) {
                 await registerMaintenanceForUnit(data);
                 toast.success("Registrado envío a mantenimiento correctamente");
+                await client.invalidateQueries({
+                  queryKey: ["inventory", "activities"],
+                });
               } else {
                 toast.error("Por favor, seleccione una unidad");
               }
