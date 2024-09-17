@@ -14,10 +14,13 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -26,16 +29,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { RoleName, ROLES } from "@/features/auth/const/roles";
-import { User } from "@/features/auth/interfaces/user";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Info } from "lucide-react";
+import { Info, PlusIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
-import { getUser, getUsers, updateUser } from "../services/users";
+import { creationForm, updateForm } from "../schema/user";
+import { createUser, getUser, getUsers, updateUser } from "../services/users";
 
 const ROLES_TO_DISPLAY: Record<RoleName, string> = {
   [ROLES.EMPLOYEE]: "Empleado",
@@ -51,6 +55,17 @@ export default function UsersTable() {
     queryKey: ["users"],
     queryFn: getUsers,
   });
+  const [open, setOpen] = useState(false);
+  const [params, setParams] = useSearchParams();
+
+  const handleClick = (id: string) => {
+    const newParams = new URLSearchParams(params);
+    newParams.set("userId", id);
+    setParams(newParams);
+    setOpen(true);
+  };
+
+  const isEditting = params.has("userId");
 
   if (isLoading) {
     return <CenteredSpinner />;
@@ -62,6 +77,18 @@ export default function UsersTable() {
 
   return (
     <div className="overflow-x-auto w-full p-4">
+      <Button
+        className="flex items-center"
+        onClick={() => {
+          const newParams = new URLSearchParams(params);
+          newParams.delete("userId");
+          setParams(newParams);
+          setOpen(true);
+        }}
+      >
+        <PlusIcon className="size-4" />
+        Crear usuario
+      </Button>
       <Table>
         <TableHeader>
           <TableCell>
@@ -96,115 +123,109 @@ export default function UsersTable() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <EditUserButton userId={user.userId} />
+                    <Button
+                      variant="outline"
+                      onClick={() => handleClick(user.userId.toString())}
+                    >
+                      Editar
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
             })}
         </TableBody>
       </Table>
+      <div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger></DialogTrigger>
+          <DialogContent className="min-w-[40rem] m-4 overflow-y-scroll">
+            <DialogTitle>{isEditting ? "Editar" : "Crear"}</DialogTitle>
+            <DialogHeader></DialogHeader>
+            <UserForm onSubmit={() => setOpen(false)} />
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }
 
-export function EditUserButton(props: { userId: number }) {
-  const [params, setParams] = useSearchParams();
-
-  const handleClick = () => {
-    const newParams = new URLSearchParams(params);
-    newParams.set("userId", props.userId.toString());
-    setParams(newParams);
-  };
-
+export function AssignRoleWarning() {
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger>
-          <Button variant="outline" onClick={handleClick}>
-            Editar
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogTitle>Cambia los roles asignados a un usuario</DialogTitle>
-          <DialogHeader>
-            <Alert variant={"destructive"}>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                <AlertTitle className="text-xl">
-                  Verifica el usuario al que estás asignando el rol.
-                </AlertTitle>
-                <DialogDescription>
-                  Esta acción se puede revertir, pero el ususario podría
-                  adquirir privilegios que no debería.
-                </DialogDescription>
-              </AlertDescription>
-            </Alert>
-          </DialogHeader>
-          <EditUserForm onSubmit={() => {}} />
-        </DialogContent>
-      </Dialog>
-    </div>
+    <Alert variant={"destructive"}>
+      <Info className="h-4 w-4" />
+      <AlertDescription>
+        <AlertTitle className="text-xl">
+          Verifica el usuario al que estás asignando el rol.
+        </AlertTitle>
+        <DialogDescription>
+          Esta acción se puede revertir, pero el ususario podría adquirir
+          privilegios que no debería.
+        </DialogDescription>
+      </AlertDescription>
+    </Alert>
   );
 }
 
-export function EditUserForm(props: { onSubmit: () => void }) {
+function UserForm(props: { onSubmit: () => void }) {
   const [params] = useSearchParams();
-  const {
-    data: user,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["users", params.get("userId")],
-    queryFn: () => getUser({ userId: parseInt(params.get("userId") ?? "") }),
-  });
+  const isEditting = params.has("userId");
 
-  if (isLoading) {
-    return <CenteredSpinner />;
-  }
-
-  if (error) {
-    return <p>No se puedo recuperar el usuario</p>;
-  }
-
-  return user && <UserForm defaultValues={user} onSubmit={props.onSubmit} />;
-}
-
-const formSchema = z.object({
-  userId: z.number(),
-  roles: z.object({
-    employee: z.boolean().default(false).optional(),
-    admin: z.boolean().default(false).optional(),
-  }),
-});
-
-export function UserForm(props: { defaultValues: User; onSubmit: () => void }) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      userId: props.defaultValues.userId,
+  const getDefaultValues = async () => {
+    const user = await getUser({
+      userId: parseInt(params.get("userId") ?? "1"),
+    });
+    return {
+      ...user,
+      password: "",
+      repeatPassword: "",
       roles: {
-        employee: !!props.defaultValues.roles.find(
-          (r) => r.name == ROLES.EMPLOYEE
-        ),
-        admin: !!props.defaultValues.roles.find((r) => r.name == ROLES.ADMIN),
+        employee: !!user.roles.find((r) => r.name == ROLES.EMPLOYEE),
+        admin: !!user.roles.find((r) => r.name == ROLES.ADMIN),
       },
-    },
+    };
+  };
+  const form = useForm<z.infer<typeof creationForm>>({
+    resolver: zodResolver(isEditting ? updateForm : creationForm),
+    defaultValues: isEditting
+      ? getDefaultValues
+      : {
+          userId: undefined,
+          username: "",
+          email: "",
+          password: "",
+          repeatPassword: "",
+          roles: {
+            employee: false,
+            admin: false,
+          },
+        },
   });
   const client = useQueryClient();
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof creationForm>) {
     try {
-      await updateUser({
-        userId: data.userId,
-        roles: Object.keys(data.roles).filter(
-          (r) => data.roles[r as keyof typeof data.roles]
-        ) as RoleName[],
-      });
+      console.log({ data });
+      const roles = Object.keys(data.roles).filter(
+        (r) => data.roles[r as keyof typeof data.roles]
+      ) as RoleName[];
+      if (data.userId) {
+        await updateUser({
+          userId: data.userId,
+          roles,
+        });
+        toast.success("Usuario actualizado correctamente");
+      } else {
+        await createUser({
+          ...data,
+          roles,
+        });
+        toast.success("Usuario creado correctamente");
+      }
 
       client.invalidateQueries({
         queryKey: ["users"],
       });
-      toast.success("Usuario actualizado correctamente");
+      props.onSubmit();
     } catch (err) {
       toast.error("Ha ocurrido un error: " + err);
     }
@@ -213,6 +234,65 @@ export function UserForm(props: { defaultValues: User; onSubmit: () => void }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nombre de usuario</FormLabel>
+              <FormControl>
+                <Input placeholder="username" {...field} />
+              </FormControl>
+              <FormDescription></FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Correo electrónico</FormLabel>
+              <FormControl>
+                <Input placeholder="example@gmail.com" {...field} />
+              </FormControl>
+              <FormDescription></FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contraseña</FormLabel>
+              <FormControl>
+                <Input placeholder="password" type="password" {...field} />
+              </FormControl>
+              <FormDescription></FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {!isEditting && (
+          <FormField
+            control={form.control}
+            name="repeatPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Repetir contraseña</FormLabel>
+                <FormControl>
+                  <Input placeholder="password" type="password" {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="roles.admin"
@@ -247,7 +327,8 @@ export function UserForm(props: { defaultValues: User; onSubmit: () => void }) {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <AssignRoleWarning />
+        <Button type="submit">{isEditting ? "Guardar" : "Crear"}</Button>
       </form>
     </Form>
   );
