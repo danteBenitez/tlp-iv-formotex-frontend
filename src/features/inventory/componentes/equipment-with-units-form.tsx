@@ -50,7 +50,7 @@ export function EquipmentUnitList() {
           <Table>
             <TableHeader>
               <TableCell>
-                <span className="sr-only">Eliminar</span>
+                <span>¿Eliminar?</span>
               </TableCell>
               <TableCell>Número de serie</TableCell>
               <TableCell>Locación</TableCell>
@@ -91,12 +91,14 @@ export function EquipmentUnitFormRow({
     >
       <Input type="hidden" value={`units.${i}.equipmentUnitId`} />
       <TableCell>
-        <Checkbox
-          checked={form.watch(`units.${i}.deleted`) ?? false}
-          onCheckedChange={(checked) => {
-            form.setValue(`units.${i}.deleted`, checked as boolean);
-          }}
-        />
+        {form.watch(`units.${i}.equipmentUnitId`) && (
+          <Checkbox
+            checked={form.watch(`units.${i}.deleted`) ?? false}
+            onCheckedChange={(checked) => {
+              form.setValue(`units.${i}.deleted`, checked as boolean);
+            }}
+          />
+        )}
       </TableCell>
       <TableCell>
         <Input
