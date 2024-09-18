@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import InventoryTable from "@/features/inventory/componentes/table";
+import InventoryTable from "@/features/inventory/components/table";
 import { PlusIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

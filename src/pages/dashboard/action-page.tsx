@@ -18,8 +18,8 @@ import { Table, TableCell, TableHeader } from "@/components/ui/table";
 import DashboardPage from "@/features/common/components/dasboard-page";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import ActivitiesTable from "@/features/inventory/activities/componentes/table";
-import DatePicker from "@/features/inventory/componentes/date-picker";
-import EquipmentUnitRow from "@/features/inventory/componentes/equipment-unit-row";
+import DatePicker from "@/features/inventory/components/date-picker";
+import EquipmentUnitRow from "@/features/inventory/components/equipment-unit-row";
 import {
   getEquipmentUnits,
   registerDeliveryForUnit,

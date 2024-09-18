@@ -1,5 +1,5 @@
 import DashboardPage from "@/features/common/components/dasboard-page";
-import EquipmentForm from "@/features/inventory/componentes/equipment-form";
+import EquipmentForm from "@/features/inventory/components/equipment-form";
 
 export default function EquipmentFormPage() {
   return (

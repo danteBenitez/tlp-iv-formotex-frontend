@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Input from "@/features/common/components/form/input";
-import BrandText from "@/features/inventory/componentes/brand-text";
+import BrandText from "@/features/inventory/components/brand-text";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
