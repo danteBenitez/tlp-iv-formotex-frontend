@@ -55,7 +55,4 @@ export const updateForm = createUserSchema
         repeatPassword: true,
         password: true,
     })
-    .extend({
-        password: z.literal("").or(passwordSchema.optional()),
-    })
     .and(rolesSchema);

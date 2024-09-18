@@ -1,5 +1,5 @@
 import DashboardPage from "@/features/common/components/dasboard-page";
-import UsersTable from "@/features/dashboard/componentes/users-table";
+import UsersTable from "@/features/dashboard/components/users-table";
 
 export default function UsersTablePage() {
   return (

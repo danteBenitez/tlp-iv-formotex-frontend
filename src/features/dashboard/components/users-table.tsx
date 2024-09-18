@@ -2,7 +2,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -11,16 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import {
   Table,
   TableBody,
@@ -48,6 +38,7 @@ import {
   getUsers,
   updateUser,
 } from "../services/users";
+import UserForm from "./user-form";
 
 const ROLES_TO_DISPLAY: Record<RoleName, string> = {
   [ROLES.EMPLOYEE]: "Empleado",
@@ -172,7 +163,7 @@ export default function UsersTable() {
           <DialogContent className="min-w-[40rem] m-4 overflow-y-scroll">
             <DialogTitle>{isEditting ? "Editar" : "Crear"}</DialogTitle>
             <DialogHeader></DialogHeader>
-            <UserForm onSubmit={() => setOpen(false)} />
+            <UserFormForAdmin onSubmit={() => setOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
@@ -197,7 +188,7 @@ export function AssignRoleWarning() {
   );
 }
 
-function UserForm(props: { onSubmit: () => void }) {
+function UserFormForAdmin(props: { onSubmit: () => void }) {
   const [params] = useSearchParams();
   const isEditting = params.has("userId");
 
@@ -207,15 +198,13 @@ function UserForm(props: { onSubmit: () => void }) {
     });
     return {
       ...user,
-      password: "",
-      repeatPassword: "",
       roles: {
         employee: !!user.roles.find((r) => r.name == ROLES.EMPLOYEE),
         admin: !!user.roles.find((r) => r.name == ROLES.ADMIN),
       },
     };
   };
-  const form = useForm<z.infer<typeof creationForm>>({
+  const form = useForm<z.infer<typeof creationForm | typeof updateForm>>({
     resolver: zodResolver(isEditting ? updateForm : creationForm),
     defaultValues: isEditting
       ? getDefaultValues
@@ -223,8 +212,6 @@ function UserForm(props: { onSubmit: () => void }) {
           userId: undefined,
           username: "",
           email: "",
-          password: "",
-          repeatPassword: "",
           roles: {
             employee: false,
             admin: false,
@@ -233,22 +220,23 @@ function UserForm(props: { onSubmit: () => void }) {
   });
   const client = useQueryClient();
 
-  async function onSubmit(data: z.infer<typeof creationForm>) {
+  async function onSubmit(
+    data: z.infer<typeof creationForm | typeof updateForm>
+  ) {
     try {
       const roles = Object.keys(data.roles).filter(
         (r) => data.roles[r as keyof typeof data.roles]
       ) as RoleName[];
       if (data.userId) {
         await updateUser({
-          ...data,
-          password: data.password == "" ? undefined : data.password,
+          ...(data as z.infer<typeof updateForm>),
           userId: data.userId,
           roles,
         });
         toast.success("Usuario actualizado correctamente");
       } else {
         await createUser({
-          ...data,
+          ...(data as z.infer<typeof creationForm>),
           roles,
         });
         toast.success("Usuario creado correctamente");
@@ -271,103 +259,20 @@ function UserForm(props: { onSubmit: () => void }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre de usuario</FormLabel>
-              <FormControl>
-                <Input placeholder="username" {...field} />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Correo electrónico</FormLabel>
-              <FormControl>
-                <Input placeholder="example@gmail.com" {...field} />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Contraseña</FormLabel>
-              <FormControl>
-                <Input placeholder="password" type="password" {...field} />
-              </FormControl>
-              <FormDescription></FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {!isEditting && (
-          <FormField
-            control={form.control}
-            name="repeatPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Repetir contraseña</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" type="password" {...field} />
-                </FormControl>
-                <FormDescription></FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        <FormField
-          control={form.control}
-          name="roles.admin"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Administrador</FormLabel>
-              </div>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="roles.employee"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Empleado</FormLabel>
-              </div>
-            </FormItem>
-          )}
-        />
-        <AssignRoleWarning />
-        <Button type="submit">{isEditting ? "Guardar" : "Crear"}</Button>
-      </form>
+      <UserForm
+        // @ts-expect-error Nótese que nuestro formulario
+        // incluye el campo de contraseña al crear,
+        // por lo que, cuando `onSubmit` ejecuta una creación
+        // el campo `password` estará entre los datos
+        onSubmit={onSubmit}
+        showPasswordInput={!isEditting}
+        footer={
+          <>
+            <AssignRoleWarning />
+            <Button>{isEditting ? "Guardar" : "Crear"}</Button>
+          </>
+        }
+      />
     </Form>
   );
 }
