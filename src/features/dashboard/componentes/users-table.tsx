@@ -205,12 +205,13 @@ function UserForm(props: { onSubmit: () => void }) {
 
   async function onSubmit(data: z.infer<typeof creationForm>) {
     try {
-      console.log({ data });
       const roles = Object.keys(data.roles).filter(
         (r) => data.roles[r as keyof typeof data.roles]
       ) as RoleName[];
       if (data.userId) {
         await updateUser({
+          ...data,
+          password: data.password == "" ? undefined : data.password,
           userId: data.userId,
           roles,
         });
@@ -223,7 +224,7 @@ function UserForm(props: { onSubmit: () => void }) {
         toast.success("Usuario creado correctamente");
       }
 
-      client.invalidateQueries({
+      await client.invalidateQueries({
         queryKey: ["users"],
       });
       props.onSubmit();

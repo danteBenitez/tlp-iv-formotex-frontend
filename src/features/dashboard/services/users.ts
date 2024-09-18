@@ -23,7 +23,12 @@ export async function getUser(params: { userId: number }) {
     }
 }
 
-export async function updateUser(params: { userId: number, roles: RoleName[] }) {
+type UpdateUserParams = Omit<Partial<User>, "roles"> & {
+    roles: RoleName[],
+    password?: string
+}
+
+export async function updateUser(params: Partial<UpdateUserParams>) {
     try {
         const response = await api.patch<{ user: User }>(`/users/${params.userId}`, params);
         return response.data.user;
