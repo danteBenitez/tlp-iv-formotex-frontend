@@ -25,6 +25,7 @@ type UserFormProps =
   | {
       onSubmit: (data: UserFormType) => void;
       showPasswordInput: true;
+      showRoleAssignment?: boolean;
       footer: ReactNode;
     }
   | {
@@ -32,6 +33,7 @@ type UserFormProps =
         data: Omit<UserFormType, "password" | "repeatPassword">
       ) => void;
       showPasswordInput: false;
+      showRoleAssignment?: boolean;
       footer: ReactNode;
     };
 
@@ -100,40 +102,44 @@ export default function UserForm(props: UserFormProps) {
           )}
         />
       )}
-      <FormField
-        control={form.control}
-        name="roles.admin"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel>Administrador</FormLabel>
-            </div>
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="roles.employee"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-            <FormControl>
-              <Checkbox
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
-            <div className="space-y-1 leading-none">
-              <FormLabel>Empleado</FormLabel>
-            </div>
-          </FormItem>
-        )}
-      />
+      {props.showRoleAssignment && (
+        <>
+          <FormField
+            control={form.control}
+            name="roles.admin"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Administrador</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="roles.employee"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Empleado</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+        </>
+      )}
       {props.footer}
     </form>
   );

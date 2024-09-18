@@ -38,6 +38,20 @@ export async function updateUser(params: Partial<UpdateUserParams>) {
     }
 }
 
+type UpdateUserProfile = Omit<Partial<User>, "userId"> & {
+    password?: string
+}
+
+export async function updateUserProfile(params: UpdateUserProfile) {
+    try {
+        const response = await api.patch(`/users/me`, params);
+        return response.data;
+    } catch (err) {
+        console.error(`Error al actualizar perfil de usuario`, err);
+        throw err;
+    }
+}
+
 export async function deleteUser(params: { userId: number | string }) {
     try {
         const response = await api.delete(`/users/${params.userId}`);

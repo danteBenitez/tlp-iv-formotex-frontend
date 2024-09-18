@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -23,9 +22,10 @@ import {
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import BrandText from "./brand-text";
+import UserProfileButton from "./user-profile-button";
 
 export default function Sidebar() {
-  const { signOut, user } = useAuth();
+  const { signOut } = useAuth();
   const { theme, toggle } = useTheme();
 
   return (
@@ -39,14 +39,7 @@ export default function Sidebar() {
           <BrandText />
           <SidebarLinks />
           <div className="flex justify-between">
-            <div className="flex gap-2 items-center py-5 p-2">
-              <Avatar>
-                <AvatarFallback>
-                  {user?.username[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <span>{user?.username}</span>
-            </div>
+            <UserProfileButton />
             <div className="flex gap-4 items-center">
               {theme == "light" ? <Sun /> : <Moon />}
               <Switch checked={theme == "dark"} onCheckedChange={toggle} />

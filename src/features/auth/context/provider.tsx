@@ -16,6 +16,7 @@ type AuthContext = {
   signIn: (user: SignInParams) => Promise<void>;
   signOut: () => void;
   signUp: (user: SignUpParams) => Promise<void>;
+  refetch: () => void;
 } & {
   user: User | null;
   token: string | null;
@@ -108,6 +109,7 @@ export default function AuthProvider({
           loading,
           isAuthenticated,
           status,
+          refetch: refetchUser,
         } as AuthContext
       }
     >
