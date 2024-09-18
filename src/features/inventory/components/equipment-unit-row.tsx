@@ -14,7 +14,11 @@ export default function EquipmentUnitRow(
   }
 ) {
   return (
-    <TableRow className={cn(props.selected && "bg-blue-800 hover:bg-blue-900")}>
+    <TableRow
+      className={cn(
+        props.selected && "bg-blue-800 hover:bg-blue-900 text-white"
+      )}
+    >
       <Input type="hidden" value={props.equipmentUnitId} />
       <TableCell>
         <Checkbox
