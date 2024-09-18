@@ -38,6 +38,16 @@ export async function updateUser(params: Partial<UpdateUserParams>) {
     }
 }
 
+export async function deleteUser(params: { userId: number | string }) {
+    try {
+        const response = await api.delete(`/users/${params.userId}`);
+        return response.data.user;
+    } catch (err) {
+        console.error(`Error al eliminar usuario`, err);
+        throw err;
+    }
+}
+
 export async function createUser(params: SignUpParams) {
     try {
         const response = await api.post<User>(`/users/`, params);

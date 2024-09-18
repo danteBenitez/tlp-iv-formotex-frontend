@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { RoleName, ROLES } from "@/features/auth/const/roles";
+import DeleteButton from "@/features/common/components/delete-button";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -40,7 +41,13 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { creationForm, updateForm } from "../schema/user";
-import { createUser, getUser, getUsers, updateUser } from "../services/users";
+import {
+  createUser,
+  deleteUser,
+  getUser,
+  getUsers,
+  updateUser,
+} from "../services/users";
 
 const ROLES_TO_DISPLAY: Record<RoleName, string> = {
   [ROLES.EMPLOYEE]: "Empleado",
@@ -67,6 +74,19 @@ export default function UsersTable() {
   };
 
   const isEditting = params.has("userId");
+
+  const client = useQueryClient();
+  const handleDelete = async (userId: number) => {
+    try {
+      await deleteUser({ userId });
+      await client.invalidateQueries({
+        queryKey: ["users"],
+      });
+      toast.success("Usuario borrado correctamente");
+    } catch (err) {
+      toast.error("No se pudo eliminar el usuario" + err);
+    }
+  };
 
   if (isLoading) {
     return <CenteredSpinner />;
@@ -130,6 +150,16 @@ export default function UsersTable() {
                     >
                       Editar
                     </Button>
+                    <DeleteButton
+                      id={user.userId}
+                      mutationKey={["users", "delete", user.userId.toString()]}
+                      onDelete={handleDelete}
+                      dialogText={{
+                        title:
+                          "¿Está seguro de que desea eliminar este usuarios?",
+                        description: "Esta acción es irreversible",
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               );
