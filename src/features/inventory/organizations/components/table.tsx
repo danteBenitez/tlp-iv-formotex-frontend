@@ -23,11 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ApiError } from "@/features/common/api";
 import DeleteButton from "@/features/common/components/delete-button";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -67,9 +67,14 @@ export default function OrganizationTable() {
       });
       toast.success("Organización eliminada correctamente");
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
-          toast.error(err.response.data.message);
+          if (
+            typeof err.response.data == "object" &&
+            "message" in (err.response.data as { message: string })
+          ) {
+            toast.error(err.response.data.message);
+          }
         }
         return;
       }
@@ -219,7 +224,7 @@ export function AddOrgForm(props: {
       });
       props.onSubmit();
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
           toast.error("Ya existe una organización con ese nombre");
           return;

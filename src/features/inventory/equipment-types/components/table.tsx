@@ -24,11 +24,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ApiError } from "@/features/common/api";
 import DeleteButton from "@/features/common/components/delete-button";
 import Spinner from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -65,7 +65,7 @@ export default function EquipmentTypesTable() {
       });
       toast.success("Tipo de equipamiento borrado correctamente");
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
           toast.error("Existen equipo con este tipo. No es posible borrarlo");
         }
@@ -211,7 +211,7 @@ export function AddTypeForm(props: {
       });
       props.onSubmit();
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
           toast.error("Ya existe un tipo con ese nombre");
           return;

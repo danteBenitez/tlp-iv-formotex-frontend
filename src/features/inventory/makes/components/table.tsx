@@ -23,11 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ApiError } from "@/features/common/api";
 import DeleteButton from "@/features/common/components/delete-button";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -74,7 +74,7 @@ export default function MakeTable() {
       });
       toast.success("Marca eliminada exitosamente");
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
           toast.error("Existen equipo con esta marca. No es posible borrarla");
           return;
@@ -217,7 +217,7 @@ export function AddMakeForm(props: {
       });
       props.onSubmit();
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
           toast.error("Ya existe una marca con ese nombre");
           return;

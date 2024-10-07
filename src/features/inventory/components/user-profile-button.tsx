@@ -8,12 +8,12 @@ import {
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import useAuth from "@/features/auth/hooks/use-auth";
+import { ApiError } from "@/features/common/api";
 import { CenteredSpinner } from "@/features/common/components/spinner";
 import UserForm from "@/features/dashboard/components/user-form";
 import { passwordSchema } from "@/features/dashboard/schema/user";
 import { updateUserProfile } from "@/features/dashboard/services/users";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -58,7 +58,7 @@ export default function UserProfileButton() {
       toast.success("Perfil actualizado");
       setOpen(false);
     } catch (err) {
-      if (err instanceof AxiosError) {
+      if (err instanceof ApiError) {
         if (err.response?.status == 409) {
           toast.error("Nombre de usuario o correo electrónico en uso");
           return;
