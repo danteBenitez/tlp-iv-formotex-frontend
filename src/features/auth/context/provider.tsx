@@ -80,12 +80,12 @@ export default function AuthProvider({
 
   useEffect(() => {
     if (!token) {
-      delete api.defaults.headers.Authorization;
+      api.deleteDefaultHeader("Authorization");
       return;
     }
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+    api.setDefaultHeader("Authorization", `Bearer ${token}`);
     refetchUser();
-  }, [token]);
+  }, [token, refetchUser]);
 
   const signOut = () => {
     setToken(null);

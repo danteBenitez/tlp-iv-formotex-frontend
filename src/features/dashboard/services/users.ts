@@ -54,7 +54,7 @@ export async function updateUserProfile(params: UpdateUserProfile) {
 
 export async function deleteUser(params: { userId: number | string }) {
     try {
-        const response = await api.delete(`/users/${params.userId}`);
+        const response = await api.delete<{ user: User }>(`/users/${params.userId}`);
         return response.data.user;
     } catch (err) {
         console.error(`Error al eliminar usuario`, err);
